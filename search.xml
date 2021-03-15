@@ -32,10 +32,10 @@
     <title>插入aplayer插件</title>
     <url>/2021/01/18/test_blog_1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
-        <div id="aplayer-AKFvPWmx" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
+        <div id="aplayer-TJCcYeya" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
 			  <script>
 				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
-				  options.element = document.getElementById("aplayer-AKFvPWmx");
+				  options.element = document.getElementById("aplayer-TJCcYeya");
 				  var ap = new APlayer(options);
 			    window.aplayers || (window.aplayers = []);
 				  window.aplayers.push(ap);
