@@ -12,9 +12,14 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
+    <title>欢迎来到我的博客</title>
     <url>/2021/01/17/hello-world/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p>欢迎来到<br><a href="http://localhost:4000/">KBdog的个人博客</a>||<br><a href="https://github.com/KBdog">Github</a>||<br><a href="https://space.bilibili.com/3368545">Bilibili</a>||<br><a href="https://twitter.com/yu1246450339">Twitter</a>||</p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="欢迎你陌生人"><a href="#欢迎你陌生人" class="headerlink" title="欢迎你陌生人"></a>欢迎你陌生人</h1><ul>
+<li><a href="http://localhost:4000/">KBdog的个人博客</a></li>
+<li><a href="https://github.com/KBdog">Github</a></li>
+<li><a href="https://space.bilibili.com/3368545">Bilibili</a></li>
+<li><a href="https://twitter.com/yu1246450339">Twitter</a></li>
+</ul>
 ]]></content>
       <categories>
         <category>hello world</category>
@@ -111,24 +116,17 @@
     <url>/2021/03/15/crawler/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>从上一年年末开始，我一直使用各种爬虫工具看漫画，这些爬虫工具引起了我浓厚的学习兴趣。于是脑海中产生了自己写爬虫工具的想法。后来我通过对tachiyomi，cimoc等开源项目以及各种博客的学习中了解到了基本的爬虫原理，然后着手实践起来。</p>
 <h2 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h2><ol>
-<li><p>本人博文内容皆仅限用于学习和研究目的，部分敏感内容来源于互联网</p>
-</li>
-<li><p>如果侵犯了您的版权请通过<a href="@1246450339@qq.com">我的邮箱</a>或<a href="https://space.bilibili.com/3368545">B站账号</a>与我获得联系，我会尽快删除相关内容</p>
-<h2 id="简单的漫画爬虫过程"><a href="#简单的漫画爬虫过程" class="headerlink" title="简单的漫画爬虫过程"></a>简单的漫画爬虫过程</h2></li>
-<li><p>使用抓包工具如<a href="https://www.charlesproxy.com/">Charles</a>等截获浏览器或app的http和https请求</p>
-</li>
-<li><p>获取并分析截获的api接口，从中提取关键信息（漫画的搜索关键字、章节、每张图片等在URL中的位置）</p>
-</li>
-<li><p>从漫画关键字搜索api中获取精准漫画信息</p>
-</li>
-<li><p>从漫画信息中提取漫画id或漫画路径</p>
-</li>
-<li><p>使用漫画id等关键信息访问章节api获取当前漫画所有章节</p>
-</li>
-<li><p>从单个章节中获取其所有图片列表</p>
-</li>
-<li><p>使用IO流下载图片</p>
-</li>
+<li>本人博文内容皆仅限用于学习和研究目的，部分敏感内容来源于互联网</li>
+<li>如果侵犯了您的版权请通过<a href="@1246450339@qq.com">我的邮箱</a>或<a href="https://space.bilibili.com/3368545">B站账号</a>与我获得联系，我会尽快删除相关内容</li>
+</ol>
+<h2 id="简单的漫画爬虫过程"><a href="#简单的漫画爬虫过程" class="headerlink" title="简单的漫画爬虫过程"></a>简单的漫画爬虫过程</h2><ol>
+<li>使用抓包工具如<a href="https://www.charlesproxy.com/">Charles</a>等截获浏览器或app的http和https请求</li>
+<li>获取并分析截获的api接口，从中提取关键信息（漫画的搜索关键字、章节、每张图片等在URL中的位置）</li>
+<li>从漫画关键字搜索api中获取精准漫画信息</li>
+<li>从漫画信息中提取漫画id或漫画路径</li>
+<li>使用漫画id等关键信息访问章节api获取当前漫画所有章节</li>
+<li>从单个章节中获取其所有图片列表</li>
+<li>使用IO流下载图片</li>
 </ol>
 <h2 id="爬虫实践过程"><a href="#爬虫实践过程" class="headerlink" title="爬虫实践过程"></a>爬虫实践过程</h2><ol>
 <li>第一个爬虫项目仓库：<a href="https://github.com/KBdog/crawler-comic-dmzj.git">https://github.com/KBdog/crawler-comic-dmzj.git</a> ，完成时间：2021-01-26<br>这是我第一个爬虫项目，是通过分析dmzj网页版的标签来获取图片url下载，并不完全按以上顺序来进行。这个项目使用了selenium对网页进行模拟人工操作，通过ChromeDriver访问单点漫画首页获取所有章节标签链接，然后根据每个章节开多线程访问获得各章图片列表url。分析标签和下载使用了webmagic，在pipeline中使用io流对分析后的图片集合进行下载。（这次的项目还特意用javafx写了图形化界面，后面发现过于花里胡哨并不实用，因此在后续的爬虫项目中取消了写图形化界面的想法，直接改用命令行运行）</li>
