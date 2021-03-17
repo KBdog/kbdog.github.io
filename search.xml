@@ -34,28 +34,6 @@
       </tags>
   </entry>
   <entry>
-    <title>插入aplayer插件</title>
-    <url>/2021/01/18/test_blog_1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
-        <div id="aplayer-bqAWgXkv" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
-			  <script>
-				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
-				  options.element = document.getElementById("aplayer-bqAWgXkv");
-				  var ap = new APlayer(options);
-			    window.aplayers || (window.aplayers = []);
-				  window.aplayers.push(ap);
-			  </script>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>插件</tag>
-        <tag>aplayer</tag>
-        <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>欢迎来到我的博客</title>
     <url>/2021/01/17/hello-world/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="欢迎你陌生人"><a href="#欢迎你陌生人" class="headerlink" title="欢迎你陌生人"></a>欢迎你陌生人</h1><ul>
@@ -73,6 +51,28 @@
       </tags>
   </entry>
   <entry>
+    <title>插入aplayer插件</title>
+    <url>/2021/01/18/test_blog_1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
+        <div id="aplayer-rsNSDzSa" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
+			  <script>
+				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
+				  options.element = document.getElementById("aplayer-rsNSDzSa");
+				  var ap = new APlayer(options);
+			    window.aplayers || (window.aplayers = []);
+				  window.aplayers.push(ap);
+			  </script>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>插件</tag>
+        <tag>aplayer</tag>
+        <tag>音乐</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>插入代码</title>
     <url>/2021/01/19/test_blog_2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入代码"><a href="#测试插入代码" class="headerlink" title="测试插入代码"></a>测试插入代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> []args)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
@@ -81,6 +81,20 @@
       </categories>
       <tags>
         <tag>代码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>插入dplayer插件</title>
+    <url>/2021/01/20/test_blog_4/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试添加视频"><a href="#测试添加视频" class="headerlink" title="测试添加视频"></a>测试添加视频</h2><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FF69B4","lang":"zh-cn","preload":"auto","volume":0.7,"video":{"url":"/medialist/小碧蓝幻想.mkv","pic":"/images_chapters/beauty.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+<h2 id="github例子"><a href="#github例子" class="headerlink" title="github例子"></a>github例子</h2><div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"theme":"#FADFA3","loop":true,"video":{"url":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4","pic":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.jpg"},"danmaku":{"id":"9E2E3368B56CDBB4","api":"https://api.prprpr.me/dplayer/","token":"tokendemo","addition":["https://dplayer.daoapp.io/bilibili?aid=4157142"]}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>视频</tag>
+        <tag>dplayer</tag>
       </tags>
   </entry>
   <entry>
@@ -128,20 +142,6 @@
       </categories>
       <tags>
         <tag>标签</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>插入dplayer插件</title>
-    <url>/2021/01/20/test_blog_4/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试添加视频"><a href="#测试添加视频" class="headerlink" title="测试添加视频"></a>测试添加视频</h2><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FF69B4","lang":"zh-cn","preload":"auto","volume":0.7,"video":{"url":"/medialist/小碧蓝幻想.mkv","pic":"/images_chapters/beauty.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
-<h2 id="github例子"><a href="#github例子" class="headerlink" title="github例子"></a>github例子</h2><div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"theme":"#FADFA3","loop":true,"video":{"url":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4","pic":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.jpg"},"danmaku":{"id":"9E2E3368B56CDBB4","api":"https://api.prprpr.me/dplayer/","token":"tokendemo","addition":["https://dplayer.daoapp.io/bilibili?aid=4157142"]}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>视频</tag>
-        <tag>dplayer</tag>
       </tags>
   </entry>
 </search>
