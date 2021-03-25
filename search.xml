@@ -18,10 +18,10 @@
 <li>使用IO流下载图片</li>
 </ol>
 <h2 id="爬虫实践过程"><a href="#爬虫实践过程" class="headerlink" title="爬虫实践过程"></a>爬虫实践过程</h2><ol>
-<li>第一个爬虫项目仓库：<a href="https://github.com/KBdog/crawler-comic-dmzj.git">https://github.com/KBdog/crawler-comic-dmzj.git</a> ，完成时间：2021-01-26<br>这是我第一个爬虫项目，是通过分析dmzj网页版的标签来获取图片url下载，并不完全按以上顺序来进行。这个项目使用了selenium对网页进行模拟人工操作，通过ChromeDriver访问单点漫画首页获取所有章节标签链接，然后根据每个章节开多线程访问获得各章图片列表url。分析标签和下载使用了webmagic，在pipeline中使用io流对分析后的图片集合进行下载。（这次的项目还特意用javafx写了图形化界面，后面发现过于花里胡哨并不实用，因此在后续的爬虫项目中取消了写图形化界面的想法，直接改用命令行运行）</li>
-<li>第二个爬虫项目：分析dmzj的api接口一步步进行数据搜集（项目未托管github），完成时间：2021-02-01<br>该项目参考了<a href="https://github.com/savvym/pydmzj.git">@SavvyM</a>大佬对dmzj的抓包接口，这也是我第一次了解到api接口。大佬给出的接口信息：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">动漫之家搜索api:</span><br><span class="line">http:&#x2F;&#x2F;sacg.dmzj.com&#x2F;comicsum&#x2F;search.php?s&#x3D;$&#123;comic&#x2F;author&#125;</span><br><span class="line">小说详情api:  </span><br><span class="line">http:&#x2F;&#x2F;v2.api.dmzj.com&#x2F;novel&#x2F;$&#123;id&#125;.json (旧)  </span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;novel&#x2F;$&#123;id&#125;.json (新)  </span><br><span class="line">漫画详情api:  </span><br><span class="line">http:&#x2F;&#x2F;v2.api.dmzj.com&#x2F;comic&#x2F;$&#123;id&#125;.json (旧)  </span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;comic&#x2F;comic_$&#123;id&#125;.json(新)  </span><br><span class="line">漫画下载api:  </span><br><span class="line">https:&#x2F;&#x2F;imgzip.dmzj.com&#x2F;$&#123;first_character&#x2F;number&#125;&#x2F;$&#123;comic_id&#125;&#125;&#x2F;$&#123;chapter_id&#125;.zip  </span><br><span class="line">其中  </span><br><span class="line">$&#123;first_character&#x2F;number&#125;：漫画名称首字母或者数字  </span><br><span class="line">$&#123;comic_id&#125;:漫画id  </span><br><span class="line">$&#123;chapter_id&#125;:章节id  </span><br><span class="line">漫画章节信息api:  </span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;chapter&#x2F;$&#123;comic_id&#125;&#x2F;$&#123;chapter_id&#125;.json  </span><br><span class="line">漫画章节吐槽api:</span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;viewPoint&#x2F;0&#x2F;$&#123;comic_id&#125;&#x2F;$&#123;chapter_id&#125;.json </span><br></pre></td></tr></table></figure>
+<li>第一个爬虫项目：<a href="https://github.com/KBdog/crawler-comic-dmzj">https://github.com/KBdog/crawler-comic-dmzj</a> ，完成时间：2021-01-26<br>这是我第一个爬虫项目，是通过分析dmzj网页版的标签来获取图片url下载，并不完全按以上顺序来进行。这个项目使用了selenium对网页进行模拟人工操作，通过ChromeDriver访问单点漫画首页获取所有章节标签链接，然后根据每个章节开多线程访问获得各章图片列表url。分析标签和下载使用了webmagic，在pipeline中使用io流对分析后的图片集合进行下载。（这次的项目还特意用javafx写了图形化界面，后面发现过于花里胡哨并不实用，因此在后续的爬虫项目中取消了写图形化界面的想法，直接改用命令行运行）</li>
+<li>第二个爬虫项目：<a href="https://github.com/KBdog/crawler-comic-dmzj2">https://github.com/KBdog/crawler-comic-dmzj2</a>，完成时间：2021-02-01<br>分析dmzj的api接口一步步进行数据搜集<br>该项目参考了<a href="https://github.com/savvym/pydmzj.git">@SavvyM</a>大佬对dmzj的抓包接口，这也是我第一次了解到api接口。大佬给出的接口信息：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">动漫之家搜索api:</span><br><span class="line">http:&#x2F;&#x2F;sacg.dmzj.com&#x2F;comicsum&#x2F;search.php?s&#x3D;$&#123;comic&#x2F;author&#125;</span><br><span class="line">小说详情api:  </span><br><span class="line">http:&#x2F;&#x2F;v2.api.dmzj.com&#x2F;novel&#x2F;$&#123;id&#125;.json (旧)  </span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;novel&#x2F;$&#123;id&#125;.json (新)  </span><br><span class="line">漫画详情api:  </span><br><span class="line">http:&#x2F;&#x2F;v2.api.dmzj.com&#x2F;comic&#x2F;$&#123;id&#125;.json (旧)  </span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;comic&#x2F;comic_$&#123;id&#125;.json(新)  </span><br><span class="line">漫画下载api:  </span><br><span class="line">https:&#x2F;&#x2F;imgzip.dmzj.com&#x2F;$&#123;first_character&#x2F;number&#125;&#x2F;$&#123;comic_id&#125;&#125;&#x2F;$&#123;chapter_id&#125;.zip  </span><br><span class="line">其中  </span><br><span class="line">$&#123;first_character&#x2F;number&#125;：漫画名称首字母或者数字  </span><br><span class="line">$&#123;comic_id&#125;:漫画id  </span><br><span class="line">$&#123;chapter_id&#125;:章节id  </span><br><span class="line">漫画章节信息api:  </span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;chapter&#x2F;$&#123;comic_id&#125;&#x2F;$&#123;chapter_id&#125;.json  </span><br><span class="line">漫画章节吐槽api:</span><br><span class="line">http:&#x2F;&#x2F;v3api.dmzj.com&#x2F;viewPoint&#x2F;0&#x2F;$&#123;comic_id&#125;&#x2F;$&#123;chapter_id&#125;.json </span><br></pre></td></tr></table></figure>
 简单漫画的三要素为漫画简介、漫画章节、漫画图片，通过访问接口的信息分析得到，通常漫画的属性是按关键字、单漫画的id、单章节的id这个顺序来进行的。因此在代码中，我们可以通过解析接口返回的json数据来获得以上属性再逐步往下解析json最终使用io流下载图片。</li>
-<li>第三个爬虫项目：使用httpcanary抓包copymanga的api并下载其资源（项目未托管github），完成时间：2021-02-10<br>由于各种各样的原因，dmzj的部分漫画隐藏了起来，通过抓包抓到的api仅仅能访问可供普通用户浏览的漫画，许多隐藏漫画都无法浏览下载，为了能浏览更多的漫画本人必须扩展漫画源。最后我选择了copymanga，其接口数据简单清晰。此次的项目中，我遇到了防盗链与代理的问题。通常网站都会做防盗链的处理，简单理解就是服务端会对你的请求头进行验证，其中referer的头信息如果没有包含要求的服务端要求的信息，则服务端会判断你访问该链接的方式并不是从他们网站跳转过去的，然后禁止访问。解决方案：在访问头信息中添加相应referer<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">connection.setRequestProperty(<span class="string">&quot;Referer&quot;</span>,<span class="string">&quot;http://xxx.com/&quot;</span>);</span><br></pre></td></tr></table></figure>
+<li>第三个爬虫项目：<a href="https://github.com/KBdog/crawler-comic-copymanga">https://github.com/KBdog/crawler-comic-copymanga</a>，完成时间：2021-02-10<br>使用httpcanary抓包copymanga的api并下载其资源<br>由于各种各样的原因，dmzj的部分漫画隐藏了起来，通过抓包抓到的api仅仅能访问可供普通用户浏览的漫画，许多隐藏漫画都无法浏览下载，为了能浏览更多的漫画本人必须扩展漫画源。最后我选择了copymanga，其接口数据简单清晰。此次的项目中，我遇到了防盗链与代理的问题。通常网站都会做防盗链的处理，简单理解就是服务端会对你的请求头进行验证，其中referer的头信息如果没有包含要求的服务端要求的信息，则服务端会判断你访问该链接的方式并不是从他们网站跳转过去的，然后禁止访问。解决方案：在访问头信息中添加相应referer<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">connection.setRequestProperty(<span class="string">&quot;Referer&quot;</span>,<span class="string">&quot;http://xxx.com/&quot;</span>);</span><br></pre></td></tr></table></figure>
 然后就是代理问题，由于源站是域外的网站，访问不稳定且使用io流下载时使用的是tcp连接，影响更大，因此必须设置代理访问。这里使用快代理等免费代理即可解决。代理商提供的通常为Socket，在代码中建立连接时，使用代理连接服务商的socket进行代理访问即可。</li>
 </ol>
 ]]></content>
@@ -31,6 +31,28 @@
       <tags>
         <tag>爬虫</tag>
         <tag>漫画</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>插入aplayer插件</title>
+    <url>/2021/01/18/test_blog_1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
+        <div id="aplayer-TZEvAxZa" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
+			  <script>
+				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
+				  options.element = document.getElementById("aplayer-TZEvAxZa");
+				  var ap = new APlayer(options);
+			    window.aplayers || (window.aplayers = []);
+				  window.aplayers.push(ap);
+			  </script>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>插件</tag>
+        <tag>aplayer</tag>
+        <tag>音乐</tag>
       </tags>
   </entry>
   <entry>
@@ -51,28 +73,6 @@
       </tags>
   </entry>
   <entry>
-    <title>插入aplayer插件</title>
-    <url>/2021/01/18/test_blog_1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
-        <div id="aplayer-ANfoKBWl" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
-			  <script>
-				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
-				  options.element = document.getElementById("aplayer-ANfoKBWl");
-				  var ap = new APlayer(options);
-			    window.aplayers || (window.aplayers = []);
-				  window.aplayers.push(ap);
-			  </script>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>插件</tag>
-        <tag>aplayer</tag>
-        <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>插入代码</title>
     <url>/2021/01/19/test_blog_2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入代码"><a href="#测试插入代码" class="headerlink" title="测试插入代码"></a>测试插入代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> []args)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
@@ -81,20 +81,6 @@
       </categories>
       <tags>
         <tag>代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>插入dplayer插件</title>
-    <url>/2021/01/20/test_blog_4/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试添加视频"><a href="#测试添加视频" class="headerlink" title="测试添加视频"></a>测试添加视频</h2><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FF69B4","lang":"zh-cn","preload":"auto","volume":0.7,"video":{"url":"/medialist/小碧蓝幻想.mkv","pic":"/images_chapters/beauty.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
-<h2 id="github例子"><a href="#github例子" class="headerlink" title="github例子"></a>github例子</h2><div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"theme":"#FADFA3","loop":true,"video":{"url":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4","pic":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.jpg"},"danmaku":{"id":"9E2E3368B56CDBB4","api":"https://api.prprpr.me/dplayer/","token":"tokendemo","addition":["https://dplayer.daoapp.io/bilibili?aid=4157142"]}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>视频</tag>
-        <tag>dplayer</tag>
       </tags>
   </entry>
   <entry>
@@ -110,38 +96,6 @@
       </categories>
       <tags>
         <tag>图片</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>插入标签</title>
-    <url>/2021/01/21/test_blog_5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><div class="note simple"><p>默认提示块标签</p>
-</div>
-
-<div class="note default simple"><p>default提示块标签</p>
-</div>
-
-<div class="note primary simple"><p>primary提示块标签</p>
-</div>
-
-<div class="note success simple"><p>success提示块标签</p>
-</div>
-
-<div class="note info simple"><p>info提示块标签</p>
-</div>
-
-<div class="note warning simple"><p>warning提示块标签</p>
-</div>
-
-<div class="note danger simple"><p>danger提示块标签</p>
-</div>
-
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>标签</tag>
       </tags>
   </entry>
   <entry>
@@ -187,6 +141,52 @@
       <tags>
         <tag>mybatis</tag>
         <tag>项目配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>插入标签</title>
+    <url>/2021/01/21/test_blog_5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><div class="note simple"><p>默认提示块标签</p>
+</div>
+
+<div class="note default simple"><p>default提示块标签</p>
+</div>
+
+<div class="note primary simple"><p>primary提示块标签</p>
+</div>
+
+<div class="note success simple"><p>success提示块标签</p>
+</div>
+
+<div class="note info simple"><p>info提示块标签</p>
+</div>
+
+<div class="note warning simple"><p>warning提示块标签</p>
+</div>
+
+<div class="note danger simple"><p>danger提示块标签</p>
+</div>
+
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>标签</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>插入dplayer插件</title>
+    <url>/2021/01/20/test_blog_4/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试添加视频"><a href="#测试添加视频" class="headerlink" title="测试添加视频"></a>测试添加视频</h2><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FF69B4","lang":"zh-cn","preload":"auto","volume":0.7,"video":{"url":"/medialist/小碧蓝幻想.mkv","pic":"/images_chapters/beauty.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+<h2 id="github例子"><a href="#github例子" class="headerlink" title="github例子"></a>github例子</h2><div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"theme":"#FADFA3","loop":true,"video":{"url":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4","pic":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.jpg"},"danmaku":{"id":"9E2E3368B56CDBB4","api":"https://api.prprpr.me/dplayer/","token":"tokendemo","addition":["https://dplayer.daoapp.io/bilibili?aid=4157142"]}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>视频</tag>
+        <tag>dplayer</tag>
       </tags>
   </entry>
 </search>
