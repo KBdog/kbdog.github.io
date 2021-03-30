@@ -174,6 +174,28 @@
       </tags>
   </entry>
   <entry>
+    <title>插入aplayer插件</title>
+    <url>/2021/01/18/test_blog_1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
+        <div id="aplayer-ZcvitVzr" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
+			  <script>
+				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
+				  options.element = document.getElementById("aplayer-ZcvitVzr");
+				  var ap = new APlayer(options);
+			    window.aplayers || (window.aplayers = []);
+				  window.aplayers.push(ap);
+			  </script>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>插件</tag>
+        <tag>aplayer</tag>
+        <tag>音乐</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySql相似度搜索</title>
     <url>/2021/03/28/mysql-similiarity-search/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前一直在用模糊查询来模拟搜索引擎的搜索功能，但这种查询方式得到的结果并不太理想。比如，有一条信息<code>台湾长荣海运巨型货柜轮“长赐号”23日搁浅在苏伊士运河，造成双向航道阻塞。外媒最新报道称，“长赐号”搁浅前，其航行速度严重超出运河的限制标准。埃及总统目前已下令减轻搁浅货轮的负荷。</code>，如果使用关键字<code>苏伊士运河搁浅货轮</code>来搜索该信息，则匹配不了对应项。这就是一般模糊查询的缺陷之处，搜索的关键字必须要一一对应上信息才会有结果，因此要让搜索功能有类似搜索引擎的效果就要使用相似度/分词查询。</p>
@@ -217,28 +239,6 @@
       </tags>
   </entry>
   <entry>
-    <title>插入aplayer插件</title>
-    <url>/2021/01/18/test_blog_1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
-        <div id="aplayer-RdPyzoyn" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
-			  <script>
-				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
-				  options.element = document.getElementById("aplayer-RdPyzoyn");
-				  var ap = new APlayer(options);
-			    window.aplayers || (window.aplayers = []);
-				  window.aplayers.push(ap);
-			  </script>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>插件</tag>
-        <tag>aplayer</tag>
-        <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>插入代码</title>
     <url>/2021/01/19/test_blog_2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入代码"><a href="#测试插入代码" class="headerlink" title="测试插入代码"></a>测试插入代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> []args)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
@@ -247,21 +247,6 @@
       </categories>
       <tags>
         <tag>代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>插入图片</title>
-    <url>/2021/01/19/test_blog_3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试图片插入"><a href="#测试图片插入" class="headerlink" title="测试图片插入"></a>测试图片插入</h2><p><img src="/images_chapters/beauty.jpg" alt="有描述性文字的图片"><br><img src="/images_chapters/comet.jpg"></p>
-<div class="justified-gallery"><p><img src="https://i.loli.net/2019/12/25/Fze9jchtnyJXMHN.jpg"><br><img src="https://i.loli.net/2019/12/25/ryLVePaqkYm4TEK.jpg"><br><img src="https://i.loli.net/2019/12/25/gEy5Zc1Ai6VuO4N.jpg"><br><img src="https://i.loli.net/2019/12/25/d6QHbytlSYO4FBG.jpg"><br><img src="https://i.loli.net/2019/12/25/6nepIJ1xTgufatZ.jpg"><br><img src="https://i.loli.net/2019/12/25/E7Jvr4eIPwUNmzq.jpg"><br><img src="https://i.loli.net/2019/12/25/mh19anwBSWIkGlH.jpg"><br><img src="https://i.loli.net/2019/12/25/2tu9JC8ewpBFagv.jpg"> </p>
-          </div>
-
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>图片</tag>
       </tags>
   </entry>
   <entry>
@@ -297,6 +282,21 @@
       </tags>
   </entry>
   <entry>
+    <title>插入图片</title>
+    <url>/2021/01/19/test_blog_3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试图片插入"><a href="#测试图片插入" class="headerlink" title="测试图片插入"></a>测试图片插入</h2><p><img src="/images_chapters/beauty.jpg" alt="有描述性文字的图片"><br><img src="/images_chapters/comet.jpg"></p>
+<div class="justified-gallery"><p><img src="https://i.loli.net/2019/12/25/Fze9jchtnyJXMHN.jpg"><br><img src="https://i.loli.net/2019/12/25/ryLVePaqkYm4TEK.jpg"><br><img src="https://i.loli.net/2019/12/25/gEy5Zc1Ai6VuO4N.jpg"><br><img src="https://i.loli.net/2019/12/25/d6QHbytlSYO4FBG.jpg"><br><img src="https://i.loli.net/2019/12/25/6nepIJ1xTgufatZ.jpg"><br><img src="https://i.loli.net/2019/12/25/E7Jvr4eIPwUNmzq.jpg"><br><img src="https://i.loli.net/2019/12/25/mh19anwBSWIkGlH.jpg"><br><img src="https://i.loli.net/2019/12/25/2tu9JC8ewpBFagv.jpg"> </p>
+          </div>
+
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>图片</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>插入dplayer插件</title>
     <url>/2021/01/20/test_blog_4/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试添加视频"><a href="#测试添加视频" class="headerlink" title="测试添加视频"></a>测试添加视频</h2><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FF69B4","lang":"zh-cn","preload":"auto","volume":0.7,"video":{"url":"/medialist/小碧蓝幻想.mkv","pic":"/images_chapters/beauty.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
@@ -308,6 +308,28 @@
       <tags>
         <tag>视频</tag>
         <tag>dplayer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SSM框架学习（三）mybatis的关联映射</title>
+    <url>/2021/03/30/mybatis-3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在对数据库进行查询时，我们会遇到各种各样的查询需求，比如多表联结查询，这就需要了解一对一、一对多、多对多等概念。一对一顾名思义就是一个对象对应一个对象，比如一个班主任对应一个班级，这就是一对一，那么一对多可以理解为一个班级对应多个学生，在面向对象设计实体属性里就是班级类包含学生集合。下面用我的漫画查询作为例子来介绍这两种的关系。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>主要介绍的是一对多。在一部漫画中，通常关系都是这样的，一部漫画有多个章节，一个章节有多张图片，即是漫画：章节=1：n，漫画章节：章节图片=1：n。因此，在查询一部漫画所有内容时候我们可以通过先查漫画id获得漫画简介信息，然后通过漫画id获得章节列表，再根据每一个章节的id获得每一章的图片集合。下面分别使用了xml映射文件形式和注解形式实现这种关联查询方法。</p>
+<p>首先要看看每个的实体类，不难发现都是一对多的关系</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Message</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer comicId;</span><br><span class="line">    <span class="keyword">private</span> String comicName;</span><br><span class="line">    <span class="keyword">private</span> List&lt;ChapterModel&gt; chapterList;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChapterModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer chapterId;</span><br><span class="line">    <span class="keyword">private</span> String chapterName;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; picList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>映射文件形式</strong><br>这种形式我使用了左外连接的sql写法，在两个连接关节都让左表作为主表来列出所有集合元素</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--总信息--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;message&quot;</span> <span class="attr">type</span>=<span class="string">&quot;com.example.kbcomic.model.Message&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;comicId&quot;</span> <span class="attr">column</span>=<span class="string">&quot;comic_id&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;comicName&quot;</span> <span class="attr">column</span>=<span class="string">&quot;comic_name&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--章节集合--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;chapterList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.example.kbcomic.model.ChapterModel&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;chapter_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;chapterId&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;chapter_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;chapterName&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--图片集合--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;picList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;java.lang.String&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;pic_url&quot;</span> <span class="attr">property</span>=<span class="string">&quot;picUrl&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--查询总信息--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;queryMessageByComicId&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;message&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;java.lang.Integer&quot;</span>&gt;</span></span><br><span class="line">        select</span><br><span class="line">                all_comic.comic_id,</span><br><span class="line">                all_comic.comic_name,</span><br><span class="line">                all_chapter.chapter_id,</span><br><span class="line">                all_chapter.chapter_name,</span><br><span class="line">                all_pic.pic_url</span><br><span class="line">        from</span><br><span class="line">            all_comic</span><br><span class="line">        left join all_chapter on all_comic.comic_id=all_chapter.comic_id</span><br><span class="line">        left join all_pic on all_chapter.chapter_id=all_pic.chapter_id</span><br><span class="line">        where all_comic.comic_id=#&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>注解写法</strong><br>这种方式其实是对数据库查了三次再拼接起来最后的集合</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 注解方式实现一对多</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Select(&quot;select comic_id,comic_name from all_comic where comic_id=#&#123;id&#125;&quot;)</span></span><br><span class="line">   <span class="meta">@Results(&#123;</span></span><br><span class="line"><span class="meta">           @Result(column = &quot;comic_id&quot;,property = &quot;comicId&quot;),</span></span><br><span class="line"><span class="meta">           @Result(column = &quot;comic_name&quot;,property = &quot;comicName&quot;),</span></span><br><span class="line"><span class="meta">           @Result(property = &quot;chapterList&quot;,column = &quot;comic_id&quot;,</span></span><br><span class="line"><span class="meta">                   many = @Many(select = &quot;com.example.kbcomic.mapper.MessageMapper.queryChapterList&quot;))</span></span><br><span class="line"><span class="meta">   &#125;)</span></span><br><span class="line">   <span class="function">Message <span class="title">queryMessage</span><span class="params">(<span class="meta">@Param(&quot;id&quot;)</span>Integer comicId)</span></span>;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//根据漫画id查所有章节</span></span><br><span class="line">   <span class="meta">@Select(&quot;select chapter_id,chapter_name from all_chapter where comic_id=#&#123;comic_id&#125;&quot;)</span></span><br><span class="line">   <span class="meta">@Results(&#123;</span></span><br><span class="line"><span class="meta">           @Result(column = &quot;chapter_id&quot;,property = &quot;chapterId&quot;),</span></span><br><span class="line"><span class="meta">           @Result(column = &quot;chapter_name&quot;,property = &quot;chapterName&quot;),</span></span><br><span class="line"><span class="meta">           @Result(property = &quot;picList&quot;,column = &quot;chapter_id&quot;,</span></span><br><span class="line"><span class="meta">                   many = @Many(select = &quot;com.example.kbcomic.mapper.MessageMapper.queryPicList&quot;))</span></span><br><span class="line"><span class="meta">   &#125;)</span></span><br><span class="line">   List&lt;ChapterModel&gt;queryChapterList(<span class="meta">@Param(&quot;comic_id&quot;)</span>Integer id);</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//根据章节id查所有图片</span></span><br><span class="line">   <span class="meta">@Select(&quot;select pic_url from all_pic where chapter_id=#&#123;chapter_id&#125;&quot;)</span></span><br><span class="line">   List&lt;String&gt;queryPicList(<span class="meta">@Param(&quot;chapter_id&quot;)</span>Integer id);</span><br></pre></td></tr></table></figure>
+<p>这两种写法得到的结果都是一样的。</p>
+<h2 id="相关注释与标签的理解"><a href="#相关注释与标签的理解" class="headerlink" title="相关注释与标签的理解"></a>相关注释与标签的理解</h2><p>在上面的例子中，主要有两个关键的注释或标签：<code>@Many</code>和<code>&lt;collection&gt;</code>。这两个分别在注解方式和xml映射文件中使用，意思是一样的。<code>@Many</code>的<code>select</code>属性指向的是合适类型集合的映射语句。如果在该映射语句中需要参数，则要通过同一级的<code>@Result</code>标签中的<code>column</code>属性指定并传递。而一对一的关系则需要用<code>@One</code>和<code>&lt;association&gt;</code>，其用法跟一对多一样。</p>
+]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>mybatis</tag>
+        <tag>关联映射</tag>
       </tags>
   </entry>
 </search>
