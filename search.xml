@@ -332,4 +332,42 @@
         <tag>关联映射</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SSM框架学习（四）spring的核心-控制反转IoC</title>
+    <url>/2021/04/02/spring-1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Spring是一款十分优秀的JAVAEE框架，其主要核心内容就是IoC（控制反转）和AOP（面向切面编程）。这一篇博文是我对IoC相关内容的理解。</p>
+<h2 id="IoC和DI简介"><a href="#IoC和DI简介" class="headerlink" title="IoC和DI简介"></a>IoC和DI简介</h2><ol>
+<li>IoC英文全称叫<code>Inversion of Control</code>，是面向对象编程的一种设计方案，在Spring中的体现就是把各种bean交给Spring容器进行管理，极大降低了代码的耦合度。比如，之前要使用一个javabean对象，我们要通过<code>new</code>的方式给对象进行实例化，这是在代码里写死的，也是俗称的硬编码。这些一个个对象都在代码里写着，要对它们的依赖或属性进行修改需要改动代码，这就是高耦合的一种表现。而控制反转给我们提出一种方便的解决方案，把bean交给容器，需要修改其内容时只需在配置文件里对其操作，这就极大地降低了耦合度，方便代码的重用。</li>
+<li>DI英文名全称<code>Dependency Injection</code>，即是依赖注入。其跟控制反转是从不同角度描述的同一个概念。对象与对象之间总是有依赖关系的，比如对象A属性中包含对象B，通常情况下需要在A的代码中显式地<code>new</code>一个B。而使用依赖注入技术时A只需要定义一个私有的B对象，其实例化过程是由容器运行时在外部<code>new</code>出来再注入到A中。总的来说依赖注入的目的跟IoC一样都是解耦合。</li>
+</ol>
+<h2 id="Spring中依赖注入的方法"><a href="#Spring中依赖注入的方法" class="headerlink" title="Spring中依赖注入的方法"></a>Spring中依赖注入的方法</h2><p>既然叫注入那肯定有注入的方法。Spring给我们提供了好几种依赖注入的方法，而常用的有两种：<strong>setter注入</strong>和<strong>构造函数注入</strong></p>
+<ol>
+<li><p>setter注入<br>bean中需要进行注入的属性要有setter方法，如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer stuId;</span><br><span class="line">    <span class="keyword">private</span> String stuName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStuId</span><span class="params">(Integer stuId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.stuId = stuId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStuName</span><span class="params">(String stuName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.stuName = stuName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>且要在spring的配置文件<code>applicationContext.xml</code>中进行依赖注入</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;student&quot;</span> <span class="attr">class</span>=<span class="string">&quot;entity.Student&quot;</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;stuId&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;stuName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;kbdog&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>之后直接从上下文<code>context</code>中获取<code>name</code>为<code>student</code>的对象时，该对象已经被实例化且注入好属性<code>Student&#123;stuId=1, stuName=&#39;kbdog&#39;&#125;</code></p>
+</li>
+<li><p>构造函数注入<br>bean中要存在有参构造函数，如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer stuId;</span><br><span class="line">    <span class="keyword">private</span> String stuName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(Integer stuId, String stuName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.stuId = stuId;</span><br><span class="line">        <span class="keyword">this</span>.stuName = stuName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>applicationContext.xml</code>中注入</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;student&quot;</span> <span class="attr">class</span>=<span class="string">&quot;entity.Student&quot;</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">&quot;0&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">&quot;1&quot;</span> <span class="attr">value</span>=<span class="string">&quot;kbdog&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注入的属性为对象时，只需把<code>value</code>换成<code>ref</code>即可，<code>ref</code>指向的bean也要在IoC容器中</p>
+</li>
+</ol>
+<h2 id="可进行依赖注入的类型"><a href="#可进行依赖注入的类型" class="headerlink" title="可进行依赖注入的类型"></a>可进行依赖注入的类型</h2><ul>
+<li>基本类型和String</li>
+<li>已在IoC容器中的bean</li>
+<li>各种集合</li>
+</ul>
+]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>spring</tag>
+        <tag>控制反转</tag>
+        <tag>依赖注入</tag>
+      </tags>
+  </entry>
 </search>
