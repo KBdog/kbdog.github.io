@@ -277,28 +277,6 @@
       </tags>
   </entry>
   <entry>
-    <title>插入aplayer插件</title>
-    <url>/2021/01/18/test_blog_1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
-        <div id="aplayer-PItPdrHp" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
-			  <script>
-				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
-				  options.element = document.getElementById("aplayer-PItPdrHp");
-				  var ap = new APlayer(options);
-			    window.aplayers || (window.aplayers = []);
-				  window.aplayers.push(ap);
-			  </script>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>插件</tag>
-        <tag>aplayer</tag>
-        <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>在spring boot项目中进行全局异常处理</title>
     <url>/2021/04/04/springboot-1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在项目中我们会经常碰到异常处理的问题，比如用户在发送请求到我们的后端时如果请求参数或路径出现错误，在没做异常处理的情况下服务端会直接把一大串错误信息返回给用户。这种情况并不少见，用户获得这些信息并没有什么用处，我们后端可以对所有这种异常进行统一的处理然后提取重点统一返回封装后的数据。<a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-controller-advice">Spring官方文档</a>给我们提供一种解决方案，使用<code>@ControllerAdvice</code>和<code>@ExceptionHandler</code>注解可以将组件注册为全局异常处理类和方法。<code>@ControllerAdvice</code>实际上就是一个增强的<code>@Controller</code>，使用该controller可以实现三个方面的功能：全局异常处理、全局数据绑定、全局数据预处理。该博文将讲解其全局异常处理的使用方法。</p>
@@ -337,6 +315,28 @@
       </categories>
       <tags>
         <tag>代码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>插入aplayer插件</title>
+    <url>/2021/01/18/test_blog_1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
+        <div id="aplayer-BsPFmjkm" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
+			  <script>
+				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
+				  options.element = document.getElementById("aplayer-BsPFmjkm");
+				  var ap = new APlayer(options);
+			    window.aplayers || (window.aplayers = []);
+				  window.aplayers.push(ap);
+			  </script>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>插件</tag>
+        <tag>aplayer</tag>
+        <tag>音乐</tag>
       </tags>
   </entry>
   <entry>
