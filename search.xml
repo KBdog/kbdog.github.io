@@ -51,64 +51,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SSM框架学习（二）mybatis的动态sql以及主键回传、分页</title>
-    <url>/2021/03/26/mybatis-2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ol>
-<li>前几天写我的漫画存储项目时遇到个问题，因为设计的表结构主键自增的关系，在每次新插入漫画或章节信息时数据库会给每一个元组添加主键，每次我要按漫画信息-&gt;章节信息-&gt;图片信息的顺序插入时都要插入新数据后根据当前属性name值查一下id值才能根据id值进行下一步的插入，这样每次插入都多了一次查询操作，十分影响性能。后来通过<a href="https://mybatis.org/mybatis-3/java-api.html">mybatis的官方文档</a>找到了解决方案，mybatis的insert、update方法可以通过设置<code>useGeneratedKeys=true</code>和<code>keyProperty=&quot;id&quot;</code>实现主键回传功能然后在每次操作后返回操作元组的主键。这样一来每次操作完上一步的插入之后可以根据同一对象回传的id值进行下一步操作。</li>
-<li>之前写批量的插入删除操作时都是对单条语句重复执行，极大地浪费性能，批量处理的语句可以通过动态sql的foreach来传值处理</li>
-<li>查询分页通常分为物理分页和逻辑分页两种方法。物理分页就是在sql语句构建时候使用limit关键字进行查询，这一过程在数据库中已经完成。而逻辑分页通常是把所有结果集都查出来，然后在对应接口方法中添加指定了起始与长度的RowBounds对象，对所有数据再一次进行截获。所以，逻辑分页内存开销比较大,在数据量比较小的情况下效率比物理分页高;在数据量很大的情况下,内存开销过大,容易内存溢出。使用哪种分页要看具体情况来定夺。</li>
-</ol>
-<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><ol>
-<li>主键回传</li>
-<li>mapper的动态sql</li>
-<li>物理分页和逻辑分页</li>
-</ol>
-<h3 id="主键回传"><a href="#主键回传" class="headerlink" title="主键回传"></a>主键回传</h3><p>mapper文件方式：给insert或update方法添加属性值</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--插入漫画--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertComic&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.example.kbcomic.entity.Comic&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">useGeneratedKeys</span>=<span class="string">&quot;true&quot;</span> <span class="attr">keyColumn</span>=<span class="string">&quot;comic_id&quot;</span> <span class="attr">keyProperty</span>=<span class="string">&quot;comicId&quot;</span>&gt;</span></span><br><span class="line">        insert into all_comic 		  (comic_name,comic_description,comic_cover,create_time,update_time)</span><br><span class="line">        values (&#x27;$&#123;comicName&#125;&#x27;,&#x27;$&#123;comicDescription&#125;&#x27;,&#x27;$&#123;comicCover&#125;&#x27;,&#x27;$&#123;createTime&#125;&#x27;,&#x27;$&#123;updateTime&#125;&#x27;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>注解形式：在mapper接口对应方法上添加@Options注解并设属性值</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//插入漫画</span></span><br><span class="line"><span class="meta">@Options(useGeneratedKeys = true,keyProperty = &quot;comicId&quot;)</span></span><br><span class="line"><span class="function">Integer <span class="title">insertComic</span><span class="params">(Comic comic)</span></span>;</span><br></pre></td></tr></table></figure>
-<h3 id="动态sql"><a href="#动态sql" class="headerlink" title="动态sql"></a>动态sql</h3><ul>
-<li>if</li>
-<li>choose(when，otherwise)</li>
-<li>foreach</li>
-</ul>
-<p>下面的大部分内容直接搬mybatis文档= =（懒得自己再写一遍）</p>
-<p><strong>if</strong><br>使用动态 SQL 最常见情景是根据条件包含 where 子句的一部分。比如：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findActiveBlogWithTitleLike&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">resultType</span>=<span class="string">&quot;Blog&quot;</span>&gt;</span></span><br><span class="line">  SELECT * FROM BLOG</span><br><span class="line">  WHERE state = ‘ACTIVE’</span><br><span class="line">  <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;title != null&quot;</span>&gt;</span></span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这条语句提供了可选的查找文本功能。如果不传入 “title”，那么所有处于 “ACTIVE” 状态的 BLOG 都会返回；如果传入了 “title” 参数，那么就会对 “title” 一列进行模糊查找并返回对应的 BLOG 结果</p>
-<p>如果希望通过 “title” 和 “author” 两个参数进行可选搜索该怎么办呢？首先，我想先将语句名称修改成更名副其实的名称；接下来，只需要加入另一个条件即可。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findActiveBlogLike&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">resultType</span>=<span class="string">&quot;Blog&quot;</span>&gt;</span></span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;title != null&quot;</span>&gt;</span></span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;author != null and author.name != null&quot;</span>&gt;</span></span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>choose、when、otherwise</strong><br>有时候，我们不想使用所有的条件，而只是想从多个条件中选择一个使用。针对这种情况，MyBatis 提供了 choose 元素，它有点像 Java 中的 switch 语句。</p>
-<p>还是上面的例子，但是策略变为：传入了 “title” 就按 “title” 查找，传入了 “author” 就按 “author” 查找的情形。若两者都没有传入，就返回标记为 featured 的 BLOG。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findActiveBlogLike&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">resultType</span>=<span class="string">&quot;Blog&quot;</span>&gt;</span></span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  <span class="tag">&lt;<span class="name">choose</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;title != null&quot;</span>&gt;</span></span><br><span class="line">      AND title like #&#123;title&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;author != null and author.name != null&quot;</span>&gt;</span></span><br><span class="line">      AND author_name like #&#123;author.name&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">otherwise</span>&gt;</span></span><br><span class="line">      AND featured = 1</span><br><span class="line">    <span class="tag">&lt;/<span class="name">otherwise</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">choose</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>foreach</strong><br>foreach 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及集合项迭代之间的分隔符。这个元素也不会错误地添加多余的分隔符<br>使用我自己项目的例子</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--批量删除磁力--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;batchDeleteMagnet&quot;</span>&gt;</span></span><br><span class="line">        delete from magnet</span><br><span class="line">        where name in</span><br><span class="line">        <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">&quot;nameList&quot;</span> <span class="attr">item</span>=<span class="string">&quot;magnetName&quot;</span> <span class="attr">index</span>=<span class="string">&quot;index&quot;</span> <span class="attr">open</span>=<span class="string">&quot;(&quot;</span> <span class="attr">separator</span>=<span class="string">&quot;,&quot;</span> <span class="attr">close</span>=<span class="string">&quot;)&quot;</span>&gt;</span></span><br><span class="line">            #&#123;magnetName&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>假如namelist列表的值为(1,2,3)则该语句相当于</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;batchDeleteMagnet&quot;</span>&gt;</span></span><br><span class="line">        delete from magnet</span><br><span class="line">        where name in</span><br><span class="line">        (1,2,3)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>即是把name值为1，2，3的元组都删除，这个sql优化比之前重复操作同一条删除语句要更方便高效</p>
-<p><strong>script</strong><br>要在带注解的映射器接口类中使用动态 SQL，可以使用 script 元素。比如:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Update(&#123;&quot;&lt;script&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;update Author&quot;,</span></span><br><span class="line"><span class="meta">      &quot;  &lt;set&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;username != null&#x27;&gt;username=#&#123;username&#125;,&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;password != null&#x27;&gt;password=#&#123;password&#125;,&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;email != null&#x27;&gt;email=#&#123;email&#125;,&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;bio != null&#x27;&gt;bio=#&#123;bio&#125;&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;  &lt;/set&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;where id=#&#123;id&#125;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;&lt;/script&gt;&quot;&#125;)</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">updateAuthorValues</span><span class="params">(Author author)</span></span>;</span><br></pre></td></tr></table></figure>
-<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>物理分页例子</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;pagingQueryMagnet&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.message.entity.Magnet&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;java.lang.Integer&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from magnet</span><br><span class="line">        limit  #&#123;currentPage&#125;,#&#123;pageNum&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>逻辑分页例子</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Select(&quot;select * from book&quot;)</span></span><br><span class="line"><span class="meta">@Results(id = &quot;book&quot;,value = &#123;</span></span><br><span class="line"><span class="meta">@Result(id = true,column = &quot;id&quot;,property = &quot;bookId&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;bookname&quot;,property = &quot;bookName&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;author&quot;,property = &quot;bookAuthor&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;publicationdate&quot;,property = &quot;publicTime&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;price&quot;,property = &quot;bookPrice&quot;)</span></span><br><span class="line"><span class="meta">&#125;)</span></span><br><span class="line">List&lt;Book&gt;queryAll(RowBounds rowBounds);</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//从第一条开始查询两条数据</span></span><br><span class="line">RowBounds rowBounds=<span class="keyword">new</span> RowBounds(<span class="number">0</span>,<span class="number">2</span>);</span><br><span class="line">List&lt;Book&gt; books = mapper.queryAll(rowBounds);</span><br></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
-<li>主键回传使用<code>useGeneratedKeys=true</code>和<code>keyProperty=&quot;id&quot;</code></li>
-<li>动态sql在操作参数多的时候十分好用</li>
-<li>使用哪种分页要根据实际情况来选择</li>
-</ol>
-]]></content>
-      <categories>
-        <category>学习</category>
-      </categories>
-      <tags>
-        <tag>mybatis</tag>
-        <tag>动态sql</tag>
-        <tag>数据库分页</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SSM框架学习（一）mybatis的简单使用</title>
     <url>/2021/03/18/mybatis-1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这个学期学校开始教javaee框架，虽说我之前已经稍微学习了解过ssm，但学习的过程以及内容挺碎片化的。现在再按学校教程顺序重新过一遍理论。从这篇博文开始记录一下学习ssm的整个过程。</p>
@@ -196,46 +138,61 @@
       </tags>
   </entry>
   <entry>
-    <title>MySql相似度搜索</title>
-    <url>/2021/03/28/mysql-similiarity-search/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前一直在用模糊查询来模拟搜索引擎的搜索功能，但这种查询方式得到的结果并不太理想。比如，有一条信息<code>台湾长荣海运巨型货柜轮“长赐号”23日搁浅在苏伊士运河，造成双向航道阻塞。外媒最新报道称，“长赐号”搁浅前，其航行速度严重超出运河的限制标准。埃及总统目前已下令减轻搁浅货轮的负荷。</code>，如果使用关键字<code>苏伊士运河搁浅货轮</code>来搜索该信息，则匹配不了对应项。这就是一般模糊查询的缺陷之处，搜索的关键字必须要一一对应上信息才会有结果，因此要让搜索功能有类似搜索引擎的效果就要使用相似度/分词查询。</p>
-<h2 id="mysql中的全文索引"><a href="#mysql中的全文索引" class="headerlink" title="mysql中的全文索引"></a>mysql中的全文索引</h2><p>从mysql5.7.6开始，mysql内置了<code>ngram</code>全文解析器，用于支持中文、日文、韩文的分词。通过自带引擎的分词，我们可以通过对字段建立FULLTEXT索引，进行搜索时分词器会将关键字分词进行模糊查询最后整合出结果集。</p>
-<h2 id="使用全文索引的注意事项"><a href="#使用全文索引的注意事项" class="headerlink" title="使用全文索引的注意事项"></a>使用全文索引的注意事项</h2><ul>
-<li>只有varchar、char、text的字段才能创建FULLTEXT索引</li>
-<li>中文分词的长度用ngram_token_size设定</li>
-<li>当对表写入大量数据时，先建表写入数组再建索引速度会更快</li>
-</ul>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ol>
-<li>先设置分词长度<code>ngram_token_size</code>，大部分中文词语都是两个字符起步，因此在控制台中输入以下语句<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">mysqld --ngram_token_size=<span class="number">2</span>  </span><br></pre></td></tr></table></figure>
-或在mysql配置文件<code>my.ini</code>中设置<code>ngram_token_size=2</code>，设置结果可通过下面语句检验<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;ngram_token_size&#x27;</span></span><br></pre></td></tr></table></figure></li>
-<li>对表中要进行分词查询的字段设置全文索引<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"># all_table是表名，full_index是索引名，comic_name是字段名</span><br><span class="line"># 这里必须指定分词器</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> all_comic <span class="keyword">ADD</span> FULLTEXT INDEX `full_index`(`comic_name`) <span class="keyword">WITH</span> PARSER ngram</span><br></pre></td></tr></table></figure></li>
-<li>使用MATCH()…AGAINST()语句进行查询<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> all_comic</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (comic_name)</span><br><span class="line">against(<span class="string">&#x27;異世界後宮&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<img src="/images_chapters/similiar_search.jpg" alt="查询结果"></li>
+    <title>SSM框架学习（二）mybatis的动态sql以及主键回传、分页</title>
+    <url>/2021/03/26/mybatis-2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ol>
+<li>前几天写我的漫画存储项目时遇到个问题，因为设计的表结构主键自增的关系，在每次新插入漫画或章节信息时数据库会给每一个元组添加主键，每次我要按漫画信息-&gt;章节信息-&gt;图片信息的顺序插入时都要插入新数据后根据当前属性name值查一下id值才能根据id值进行下一步的插入，这样每次插入都多了一次查询操作，十分影响性能。后来通过<a href="https://mybatis.org/mybatis-3/java-api.html">mybatis的官方文档</a>找到了解决方案，mybatis的insert、update方法可以通过设置<code>useGeneratedKeys=true</code>和<code>keyProperty=&quot;id&quot;</code>实现主键回传功能然后在每次操作后返回操作元组的主键。这样一来每次操作完上一步的插入之后可以根据同一对象回传的id值进行下一步操作。</li>
+<li>之前写批量的插入删除操作时都是对单条语句重复执行，极大地浪费性能，批量处理的语句可以通过动态sql的foreach来传值处理</li>
+<li>查询分页通常分为物理分页和逻辑分页两种方法。物理分页就是在sql语句构建时候使用limit关键字进行查询，这一过程在数据库中已经完成。而逻辑分页通常是把所有结果集都查出来，然后在对应接口方法中添加指定了起始与长度的RowBounds对象，对所有数据再一次进行截获。所以，逻辑分页内存开销比较大,在数据量比较小的情况下效率比物理分页高;在数据量很大的情况下,内存开销过大,容易内存溢出。使用哪种分页要看具体情况来定夺。</li>
 </ol>
-<h2 id="全文检索的模式"><a href="#全文检索的模式" class="headerlink" title="全文检索的模式"></a>全文检索的模式</h2><ul>
-<li><p>自然语言模式(NATURAL LANGUAGE MODE)。自然语言模式是MySQL 默认的全文检索模式。自然语言模式不能使用操作符，不能指定关键词必须出现或者必须不能出现等复杂查询。</p>
-</li>
-<li><p>BOOLEAN模式(BOOLEAN MODE)。BOOLEAN模式可以使用操作符，可以支持指定关键词必须出现或者必须不能出现或者关键词的权重高还是低等复杂查询。</p>
-</li>
-<li><p>使用例子</p>
-</li>
+<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><ol>
+<li>主键回传</li>
+<li>mapper的动态sql</li>
+<li>物理分页和逻辑分页</li>
+</ol>
+<h3 id="主键回传"><a href="#主键回传" class="headerlink" title="主键回传"></a>主键回传</h3><p>mapper文件方式：给insert或update方法添加属性值</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--插入漫画--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertComic&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.example.kbcomic.entity.Comic&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">useGeneratedKeys</span>=<span class="string">&quot;true&quot;</span> <span class="attr">keyColumn</span>=<span class="string">&quot;comic_id&quot;</span> <span class="attr">keyProperty</span>=<span class="string">&quot;comicId&quot;</span>&gt;</span></span><br><span class="line">        insert into all_comic 		  (comic_name,comic_description,comic_cover,create_time,update_time)</span><br><span class="line">        values (&#x27;$&#123;comicName&#125;&#x27;,&#x27;$&#123;comicDescription&#125;&#x27;,&#x27;$&#123;comicCover&#125;&#x27;,&#x27;$&#123;createTime&#125;&#x27;,&#x27;$&#123;updateTime&#125;&#x27;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注解形式：在mapper接口对应方法上添加@Options注解并设属性值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//插入漫画</span></span><br><span class="line"><span class="meta">@Options(useGeneratedKeys = true,keyProperty = &quot;comicId&quot;)</span></span><br><span class="line"><span class="function">Integer <span class="title">insertComic</span><span class="params">(Comic comic)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="动态sql"><a href="#动态sql" class="headerlink" title="动态sql"></a>动态sql</h3><ul>
+<li>if</li>
+<li>choose(when，otherwise)</li>
+<li>foreach</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> all_comic</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (comic_name)</span><br><span class="line">against(<span class="string">&#x27;異世界後宮&#x27;</span> <span class="keyword">in</span> <span class="keyword">NATURAL</span> <span class="keyword">LANGUAGE</span> MODE);</span><br><span class="line">################################################</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> all_comic</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (comic_name)</span><br><span class="line">against(<span class="string">&#x27;+異世界 -後宮&#x27;</span> <span class="keyword">in</span> <span class="type">BOOLEAN</span> MODE);</span><br></pre></td></tr></table></figure>
-<p><img src="/images_chapters/mode1_result.jpg" alt="自然语言模式结果"><br><img src="/images_chapters/mode2_result.jpg" alt="BOOLEAN模式结果"></p>
-<ul>
-<li>BOOLEAN模式其他使用方式</li>
-</ul>
-<p>来源于<a href="https://www.jianshu.com/p/c48106149b6a/">https://www.jianshu.com/p/c48106149b6a/</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#39;apple banana&#39; </span><br><span class="line">无操作符，表示或，要么包含apple，要么包含banana</span><br><span class="line"></span><br><span class="line">&#39;+apple +juice&#39;</span><br><span class="line">必须同时包含两个词</span><br><span class="line"></span><br><span class="line">&#39;+apple macintosh&#39;</span><br><span class="line">必须包含apple，但是如果也包含macintosh的话，相关性会更高。</span><br><span class="line"></span><br><span class="line">&#39;+apple -macintosh&#39;</span><br><span class="line">必须包含apple，同时不能包含macintosh。</span><br><span class="line"></span><br><span class="line">&#39;+apple ~macintosh&#39;</span><br><span class="line">必须包含apple，但是如果也包含macintosh的话，相关性要比不包含macintosh的记录低。</span><br><span class="line"></span><br><span class="line">&#39;+apple +(&gt;juice &lt;pie)&#39;</span><br><span class="line">查询必须包含apple和juice或者apple和pie的记录，但是apple juice的相关性要比apple pie高。</span><br><span class="line"></span><br><span class="line">&#39;apple*&#39;</span><br><span class="line">查询包含以apple开头的单词的记录，如apple、apples、applet。</span><br><span class="line"></span><br><span class="line">&#39;&quot;some words&quot;&#39;</span><br><span class="line">使用双引号把要搜素的词括起来，效果类似于like &#39;%some words%&#39;，</span><br><span class="line">例如“some words of wisdom”会被匹配到，而“some noise words”就不会被匹配。</span><br></pre></td></tr></table></figure>]]></content>
+<p>下面的大部分内容直接搬mybatis文档= =（懒得自己再写一遍）</p>
+<p><strong>if</strong><br>使用动态 SQL 最常见情景是根据条件包含 where 子句的一部分。比如：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findActiveBlogWithTitleLike&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">resultType</span>=<span class="string">&quot;Blog&quot;</span>&gt;</span></span><br><span class="line">  SELECT * FROM BLOG</span><br><span class="line">  WHERE state = ‘ACTIVE’</span><br><span class="line">  <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;title != null&quot;</span>&gt;</span></span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这条语句提供了可选的查找文本功能。如果不传入 “title”，那么所有处于 “ACTIVE” 状态的 BLOG 都会返回；如果传入了 “title” 参数，那么就会对 “title” 一列进行模糊查找并返回对应的 BLOG 结果</p>
+<p>如果希望通过 “title” 和 “author” 两个参数进行可选搜索该怎么办呢？首先，我想先将语句名称修改成更名副其实的名称；接下来，只需要加入另一个条件即可。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findActiveBlogLike&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">resultType</span>=<span class="string">&quot;Blog&quot;</span>&gt;</span></span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;title != null&quot;</span>&gt;</span></span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;author != null and author.name != null&quot;</span>&gt;</span></span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>choose、when、otherwise</strong><br>有时候，我们不想使用所有的条件，而只是想从多个条件中选择一个使用。针对这种情况，MyBatis 提供了 choose 元素，它有点像 Java 中的 switch 语句。</p>
+<p>还是上面的例子，但是策略变为：传入了 “title” 就按 “title” 查找，传入了 “author” 就按 “author” 查找的情形。若两者都没有传入，就返回标记为 featured 的 BLOG。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findActiveBlogLike&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">resultType</span>=<span class="string">&quot;Blog&quot;</span>&gt;</span></span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  <span class="tag">&lt;<span class="name">choose</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;title != null&quot;</span>&gt;</span></span><br><span class="line">      AND title like #&#123;title&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;author != null and author.name != null&quot;</span>&gt;</span></span><br><span class="line">      AND author_name like #&#123;author.name&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">otherwise</span>&gt;</span></span><br><span class="line">      AND featured = 1</span><br><span class="line">    <span class="tag">&lt;/<span class="name">otherwise</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">choose</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>foreach</strong><br>foreach 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及集合项迭代之间的分隔符。这个元素也不会错误地添加多余的分隔符<br>使用我自己项目的例子</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--批量删除磁力--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;batchDeleteMagnet&quot;</span>&gt;</span></span><br><span class="line">        delete from magnet</span><br><span class="line">        where name in</span><br><span class="line">        <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">&quot;nameList&quot;</span> <span class="attr">item</span>=<span class="string">&quot;magnetName&quot;</span> <span class="attr">index</span>=<span class="string">&quot;index&quot;</span> <span class="attr">open</span>=<span class="string">&quot;(&quot;</span> <span class="attr">separator</span>=<span class="string">&quot;,&quot;</span> <span class="attr">close</span>=<span class="string">&quot;)&quot;</span>&gt;</span></span><br><span class="line">            #&#123;magnetName&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>假如namelist列表的值为(1,2,3)则该语句相当于</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;batchDeleteMagnet&quot;</span>&gt;</span></span><br><span class="line">        delete from magnet</span><br><span class="line">        where name in</span><br><span class="line">        (1,2,3)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>即是把name值为1，2，3的元组都删除，这个sql优化比之前重复操作同一条删除语句要更方便高效</p>
+<p><strong>script</strong><br>要在带注解的映射器接口类中使用动态 SQL，可以使用 script 元素。比如:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Update(&#123;&quot;&lt;script&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;update Author&quot;,</span></span><br><span class="line"><span class="meta">      &quot;  &lt;set&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;username != null&#x27;&gt;username=#&#123;username&#125;,&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;password != null&#x27;&gt;password=#&#123;password&#125;,&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;email != null&#x27;&gt;email=#&#123;email&#125;,&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;    &lt;if test=&#x27;bio != null&#x27;&gt;bio=#&#123;bio&#125;&lt;/if&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;  &lt;/set&gt;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;where id=#&#123;id&#125;&quot;,</span></span><br><span class="line"><span class="meta">      &quot;&lt;/script&gt;&quot;&#125;)</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">updateAuthorValues</span><span class="params">(Author author)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>物理分页例子</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;pagingQueryMagnet&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.message.entity.Magnet&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;java.lang.Integer&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from magnet</span><br><span class="line">        limit  #&#123;currentPage&#125;,#&#123;pageNum&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>逻辑分页例子</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Select(&quot;select * from book&quot;)</span></span><br><span class="line"><span class="meta">@Results(id = &quot;book&quot;,value = &#123;</span></span><br><span class="line"><span class="meta">@Result(id = true,column = &quot;id&quot;,property = &quot;bookId&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;bookname&quot;,property = &quot;bookName&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;author&quot;,property = &quot;bookAuthor&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;publicationdate&quot;,property = &quot;publicTime&quot;),</span></span><br><span class="line"><span class="meta">@Result(column = &quot;price&quot;,property = &quot;bookPrice&quot;)</span></span><br><span class="line"><span class="meta">&#125;)</span></span><br><span class="line">List&lt;Book&gt;queryAll(RowBounds rowBounds);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//从第一条开始查询两条数据</span></span><br><span class="line">RowBounds rowBounds=<span class="keyword">new</span> RowBounds(<span class="number">0</span>,<span class="number">2</span>);</span><br><span class="line">List&lt;Book&gt; books = mapper.queryAll(rowBounds);</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>主键回传使用<code>useGeneratedKeys=true</code>和<code>keyProperty=&quot;id&quot;</code></li>
+<li>动态sql在操作参数多的时候十分好用</li>
+<li>使用哪种分页要根据实际情况来选择</li>
+</ol>
+]]></content>
       <categories>
         <category>学习</category>
       </categories>
       <tags>
-        <tag>mysql</tag>
-        <tag>相似度搜索</tag>
-        <tag>分词查询</tag>
-        <tag>模糊查询</tag>
-        <tag>全文检索</tag>
+        <tag>mybatis</tag>
+        <tag>动态sql</tag>
+        <tag>数据库分页</tag>
       </tags>
   </entry>
   <entry>
@@ -280,10 +237,10 @@
     <title>插入aplayer插件</title>
     <url>/2021/01/18/test_blog_1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入aplayer插件"><a href="#测试插入aplayer插件" class="headerlink" title="测试插入aplayer插件"></a>测试插入aplayer插件</h2>
-        <div id="aplayer-rvmlGRmY" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
+        <div id="aplayer-SheRqQrd" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;"></div>
 			  <script>
 				  var options = {"narrow":false,"autoplay":false,"showlrc":3,"volum":0.2,"music":[{"title":"稻香","author":"周杰伦","url":"/musiclist/周杰伦 - 稻香.mp3","pic":"/images_chapters/beauty.jpg"},{"title":"给我一首歌的时间-周杰伦","author":"周杰伦","url":"/musiclist/给我一首歌的时间-周杰伦.mp3","pic":"/images_chapters/beauty.jpg"}]};
-				  options.element = document.getElementById("aplayer-rvmlGRmY");
+				  options.element = document.getElementById("aplayer-SheRqQrd");
 				  var ap = new APlayer(options);
 			    window.aplayers || (window.aplayers = []);
 				  window.aplayers.push(ap);
@@ -296,6 +253,49 @@
         <tag>插件</tag>
         <tag>aplayer</tag>
         <tag>音乐</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySql相似度搜索</title>
+    <url>/2021/03/28/mysql-similiarity-search/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前一直在用模糊查询来模拟搜索引擎的搜索功能，但这种查询方式得到的结果并不太理想。比如，有一条信息<code>台湾长荣海运巨型货柜轮“长赐号”23日搁浅在苏伊士运河，造成双向航道阻塞。外媒最新报道称，“长赐号”搁浅前，其航行速度严重超出运河的限制标准。埃及总统目前已下令减轻搁浅货轮的负荷。</code>，如果使用关键字<code>苏伊士运河搁浅货轮</code>来搜索该信息，则匹配不了对应项。这就是一般模糊查询的缺陷之处，搜索的关键字必须要一一对应上信息才会有结果，因此要让搜索功能有类似搜索引擎的效果就要使用相似度/分词查询。</p>
+<h2 id="mysql中的全文索引"><a href="#mysql中的全文索引" class="headerlink" title="mysql中的全文索引"></a>mysql中的全文索引</h2><p>从mysql5.7.6开始，mysql内置了<code>ngram</code>全文解析器，用于支持中文、日文、韩文的分词。通过自带引擎的分词，我们可以通过对字段建立FULLTEXT索引，进行搜索时分词器会将关键字分词进行模糊查询最后整合出结果集。</p>
+<h2 id="使用全文索引的注意事项"><a href="#使用全文索引的注意事项" class="headerlink" title="使用全文索引的注意事项"></a>使用全文索引的注意事项</h2><ul>
+<li>只有varchar、char、text的字段才能创建FULLTEXT索引</li>
+<li>中文分词的长度用ngram_token_size设定</li>
+<li>当对表写入大量数据时，先建表写入数组再建索引速度会更快</li>
+</ul>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ol>
+<li>先设置分词长度<code>ngram_token_size</code>，大部分中文词语都是两个字符起步，因此在控制台中输入以下语句<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">mysqld --ngram_token_size=<span class="number">2</span>  </span><br></pre></td></tr></table></figure>
+或在mysql配置文件<code>my.ini</code>中设置<code>ngram_token_size=2</code>，设置结果可通过下面语句检验<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;ngram_token_size&#x27;</span></span><br></pre></td></tr></table></figure></li>
+<li>对表中要进行分词查询的字段设置全文索引<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"># all_table是表名，full_index是索引名，comic_name是字段名</span><br><span class="line"># 这里必须指定分词器</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> all_comic <span class="keyword">ADD</span> FULLTEXT INDEX `full_index`(`comic_name`) <span class="keyword">WITH</span> PARSER ngram</span><br></pre></td></tr></table></figure></li>
+<li>使用MATCH()…AGAINST()语句进行查询<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> all_comic</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (comic_name)</span><br><span class="line">against(<span class="string">&#x27;異世界後宮&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<img src="/images_chapters/similiar_search.jpg" alt="查询结果"></li>
+</ol>
+<h2 id="全文检索的模式"><a href="#全文检索的模式" class="headerlink" title="全文检索的模式"></a>全文检索的模式</h2><ul>
+<li><p>自然语言模式(NATURAL LANGUAGE MODE)。自然语言模式是MySQL 默认的全文检索模式。自然语言模式不能使用操作符，不能指定关键词必须出现或者必须不能出现等复杂查询。</p>
+</li>
+<li><p>BOOLEAN模式(BOOLEAN MODE)。BOOLEAN模式可以使用操作符，可以支持指定关键词必须出现或者必须不能出现或者关键词的权重高还是低等复杂查询。</p>
+</li>
+<li><p>使用例子</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> all_comic</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (comic_name)</span><br><span class="line">against(<span class="string">&#x27;異世界後宮&#x27;</span> <span class="keyword">in</span> <span class="keyword">NATURAL</span> <span class="keyword">LANGUAGE</span> MODE);</span><br><span class="line">################################################</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> all_comic</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span> (comic_name)</span><br><span class="line">against(<span class="string">&#x27;+異世界 -後宮&#x27;</span> <span class="keyword">in</span> <span class="type">BOOLEAN</span> MODE);</span><br></pre></td></tr></table></figure>
+<p><img src="/images_chapters/mode1_result.jpg" alt="自然语言模式结果"><br><img src="/images_chapters/mode2_result.jpg" alt="BOOLEAN模式结果"></p>
+<ul>
+<li>BOOLEAN模式其他使用方式</li>
+</ul>
+<p>来源于<a href="https://www.jianshu.com/p/c48106149b6a/">https://www.jianshu.com/p/c48106149b6a/</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#39;apple banana&#39; </span><br><span class="line">无操作符，表示或，要么包含apple，要么包含banana</span><br><span class="line"></span><br><span class="line">&#39;+apple +juice&#39;</span><br><span class="line">必须同时包含两个词</span><br><span class="line"></span><br><span class="line">&#39;+apple macintosh&#39;</span><br><span class="line">必须包含apple，但是如果也包含macintosh的话，相关性会更高。</span><br><span class="line"></span><br><span class="line">&#39;+apple -macintosh&#39;</span><br><span class="line">必须包含apple，同时不能包含macintosh。</span><br><span class="line"></span><br><span class="line">&#39;+apple ~macintosh&#39;</span><br><span class="line">必须包含apple，但是如果也包含macintosh的话，相关性要比不包含macintosh的记录低。</span><br><span class="line"></span><br><span class="line">&#39;+apple +(&gt;juice &lt;pie)&#39;</span><br><span class="line">查询必须包含apple和juice或者apple和pie的记录，但是apple juice的相关性要比apple pie高。</span><br><span class="line"></span><br><span class="line">&#39;apple*&#39;</span><br><span class="line">查询包含以apple开头的单词的记录，如apple、apples、applet。</span><br><span class="line"></span><br><span class="line">&#39;&quot;some words&quot;&#39;</span><br><span class="line">使用双引号把要搜素的词括起来，效果类似于like &#39;%some words%&#39;，</span><br><span class="line">例如“some words of wisdom”会被匹配到，而“some noise words”就不会被匹配。</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
+        <tag>相似度搜索</tag>
+        <tag>分词查询</tag>
+        <tag>模糊查询</tag>
+        <tag>全文检索</tag>
       </tags>
   </entry>
   <entry>
@@ -329,6 +329,21 @@
       </tags>
   </entry>
   <entry>
+    <title>插入图片</title>
+    <url>/2021/01/19/test_blog_3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试图片插入"><a href="#测试图片插入" class="headerlink" title="测试图片插入"></a>测试图片插入</h2><p><img src="/images_chapters/beauty.jpg" alt="有描述性文字的图片"><br><img src="/images_chapters/comet.jpg"></p>
+<div class="justified-gallery"><p><img src="https://i.loli.net/2019/12/25/Fze9jchtnyJXMHN.jpg"><br><img src="https://i.loli.net/2019/12/25/ryLVePaqkYm4TEK.jpg"><br><img src="https://i.loli.net/2019/12/25/gEy5Zc1Ai6VuO4N.jpg"><br><img src="https://i.loli.net/2019/12/25/d6QHbytlSYO4FBG.jpg"><br><img src="https://i.loli.net/2019/12/25/6nepIJ1xTgufatZ.jpg"><br><img src="https://i.loli.net/2019/12/25/E7Jvr4eIPwUNmzq.jpg"><br><img src="https://i.loli.net/2019/12/25/mh19anwBSWIkGlH.jpg"><br><img src="https://i.loli.net/2019/12/25/2tu9JC8ewpBFagv.jpg"> </p>
+          </div>
+
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>图片</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>插入代码</title>
     <url>/2021/01/19/test_blog_2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试插入代码"><a href="#测试插入代码" class="headerlink" title="测试插入代码"></a>测试插入代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> []args)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
@@ -351,21 +366,6 @@
       <tags>
         <tag>视频</tag>
         <tag>dplayer</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>插入图片</title>
-    <url>/2021/01/19/test_blog_3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="测试图片插入"><a href="#测试图片插入" class="headerlink" title="测试图片插入"></a>测试图片插入</h2><p><img src="/images_chapters/beauty.jpg" alt="有描述性文字的图片"><br><img src="/images_chapters/comet.jpg"></p>
-<div class="justified-gallery"><p><img src="https://i.loli.net/2019/12/25/Fze9jchtnyJXMHN.jpg"><br><img src="https://i.loli.net/2019/12/25/ryLVePaqkYm4TEK.jpg"><br><img src="https://i.loli.net/2019/12/25/gEy5Zc1Ai6VuO4N.jpg"><br><img src="https://i.loli.net/2019/12/25/d6QHbytlSYO4FBG.jpg"><br><img src="https://i.loli.net/2019/12/25/6nepIJ1xTgufatZ.jpg"><br><img src="https://i.loli.net/2019/12/25/E7Jvr4eIPwUNmzq.jpg"><br><img src="https://i.loli.net/2019/12/25/mh19anwBSWIkGlH.jpg"><br><img src="https://i.loli.net/2019/12/25/2tu9JC8ewpBFagv.jpg"> </p>
-          </div>
-
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>图片</tag>
       </tags>
   </entry>
   <entry>
