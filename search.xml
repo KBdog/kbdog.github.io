@@ -435,4 +435,90 @@
         <tag>AOP</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SSM框架学习（六）spring mvc的简介、各种注解以及其使用方式</title>
+    <url>/2021/04/09/spring-mvc-1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="spring-mvc的简介"><a href="#spring-mvc的简介" class="headerlink" title="spring mvc的简介"></a>spring mvc的简介</h1><p>spring mvc一开始就集成于spring框架中，其功能十分强大，在web项目中主要的亮点有支持RESTful风格的请求、拦截器、异常处理、国际化、数据视图解析、跨域配置等。下面讲解spring mvc与spring搭配的web项目主要用法。</p>
+<h2 id="一个请求的执行过程"><a href="#一个请求的执行过程" class="headerlink" title="一个请求的执行过程"></a>一个请求的执行过程</h2><p>在使用了spring mvc的项目里，所有请求都会被spring容器中的<code>DispatcherServlet</code>拦截处理，整体过程：</p>
+<ol>
+<li>用户发送请求至前端控制器<code>DispatcherServlet </code></li>
+<li><code>DispatcherServlet</code>收到请求调用<code>HandlerMapping</code>处理器映射器</li>
+<li>处理器映射器找到具体的处理器(可以根据xml配置、注解进行查找)，生成处理器对象及处理器拦截器(如果有则生成)一并返回给<code>DispatcherServlet</code></li>
+<li><code>DispatcherServlet</code>调用<code>HandlerAdapter</code>处理器适配器</li>
+<li><code>HandlerAdapter</code>经过适配调用具体的处理器(Controller)</li>
+<li>Controller执行完成返回<code>ModelAndView</code></li>
+<li><code>HandlerAdapter</code>将controller执行结果<code>ModelAndView</code>返回给<code>DispatcherServlet</code></li>
+<li><code>DispatcherServlet</code>将<code>ModelAndView</code>传给<code>ViewReslover</code>视图解析器</li>
+<li><code>ViewReslover</code>解析后返回具体View</li>
+<li><code>DispatcherServlet</code>根据View进行渲染视图（将模型数据填充至视图中）</li>
+<li><code>DispatcherServlet</code>响应用户</li>
+</ol>
+<h2 id="主要注解以及使用方式"><a href="#主要注解以及使用方式" class="headerlink" title="主要注解以及使用方式"></a>主要注解以及使用方式</h2><table>
+<thead>
+<tr>
+<th align="left">注解</th>
+<th align="left">使用方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>@ResponseBody</code></td>
+<td align="left">通常与<code>@Controller</code>搭配使用，将返回的对象通过转换器转换为json或xml对象</td>
+</tr>
+<tr>
+<td align="left"><code>@RestController</code></td>
+<td align="left">相当于<code>@Controller</code>与<code>@ResponseBody</code>的整合</td>
+</tr>
+<tr>
+<td align="left"><code>@RequestMapping</code></td>
+<td align="left">注解在类或方法上，其<code>value</code>值指定当前控制器url</td>
+</tr>
+<tr>
+<td align="left"><code>@ControllerAdvice</code></td>
+<td align="left">注解在全局异常处理类上，可将该类注入到ioc容器中</td>
+</tr>
+<tr>
+<td align="left"><code>@ExceptionHandler</code></td>
+<td align="left">与<code>@ExceptionHandler</code>搭配使用，注释在方法上，参数可以指定要捕捉的异常</td>
+</tr>
+<tr>
+<td align="left"><code>@Configuration</code></td>
+<td align="left">注释在配置类上，通常用于各种配置相关的内容</td>
+</tr>
+<tr>
+<td align="left"><code>@CrossOrigin</code></td>
+<td align="left">前后端分离时的跨域处理，注释在控制类或其方法上</td>
+</tr>
+<tr>
+<td align="left"><code>@Controller</code></td>
+<td align="left">标注一个类为控制器（Controller），让其接收所有http请求</td>
+</tr>
+<tr>
+<td align="left"><code>@RequestParam</code></td>
+<td align="left">注解在控制器方法参数列表中，获取url中所带的参数</td>
+</tr>
+</tbody></table>
+<h2 id="ModelAndView的使用"><a href="#ModelAndView的使用" class="headerlink" title="ModelAndView的使用"></a>ModelAndView的使用</h2><p>在前后端不分离的情况下，<code>Controller</code>可以通过返回一个<code>ModelAndView</code>来传递返回的数据与解析视图。从名称上来看就可以知道，其囊括了MVC三层架构中的model层与view层。<br>要让其跳转到相应的视图则要在配置文件中配置视图解析器：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置视图解析器(InternalResourceViewResolver) --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>= <span class="string">&quot;parser&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 给所有的返回值增加前缀/views/,增加后缀.jsp --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/views/&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里返回的视图为success.jsp，传递的对象为student1</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testModelAndView&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">testModelAndView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	ModelAndView mv=<span class="keyword">new</span> ModelAndView(<span class="string">&quot;success&quot;</span>);</span><br><span class="line">	Student student=<span class="keyword">new</span> Student(<span class="number">1</span>, <span class="string">&quot;zhangsan&quot;</span>);</span><br><span class="line">	mv.addObject(<span class="string">&quot;student1&quot;</span>, student);</span><br><span class="line">	<span class="keyword">return</span> mv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="前后端分离通过json传递数据"><a href="#前后端分离通过json传递数据" class="headerlink" title="前后端分离通过json传递数据"></a>前后端分离通过json传递数据</h2><p>现在大部分的web项目都会进行前后端分离解耦，前端跟后端不在同一个项目中，后端不需要负责前端页面的渲染，只需要接收前端请求然后响应数据即可。而这前后端交互的过程中后端通常都是把数据结果集封装成json对象返回给前端。这个过程可以通过在Controller中使用<code>@RestController</code>实现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@CrossOrigin</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/queryMagnet&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MagnetController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> MagnetService service;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询所有磁力链接</span></span><br><span class="line">    <span class="meta">@RequestMapping(value = &quot;/all&quot;,method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> ResponseResult <span class="title">queryAllMagnet</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;Magnet&gt; magnetList=service.queryAllMagnet();</span><br><span class="line">        <span class="keyword">return</span> ResponseResult.ok(magnetList);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images_chapters/springmvc_result1.jpg" alt="Postman请求结果"></p>
+<h2 id="跨域请求的处理方法"><a href="#跨域请求的处理方法" class="headerlink" title="跨域请求的处理方法"></a>跨域请求的处理方法</h2><p>如果是前端项目通过浏览器发送的请求要注意跨域的问题，这时后端要在controller上添加<code>@CrossOrigin</code>或通过<code>@Configuration</code>配置类的方式解决。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line">	<span class="comment">//跨域设置</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addCorsMappings</span><span class="params">(CorsRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 设置允许跨域的路径</span></span><br><span class="line">        registry.addMapping(<span class="string">&quot;/**&quot;</span>)</span><br><span class="line">                <span class="comment">// 设置允许跨域请求的域名</span></span><br><span class="line">                .allowedOrigins(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">                <span class="comment">// 是否允许证书</span></span><br><span class="line">                .allowCredentials(<span class="keyword">true</span>)</span><br><span class="line">                <span class="comment">// 设置允许的方法</span></span><br><span class="line">                .allowedMethods(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;POST&quot;</span>, <span class="string">&quot;DELETE&quot;</span>, <span class="string">&quot;PUT&quot;</span>, <span class="string">&quot;PATCH&quot;</span>)</span><br><span class="line">                <span class="comment">// 设置允许的header属性</span></span><br><span class="line">                .allowedHeaders(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">                <span class="comment">// 跨域允许时间</span></span><br><span class="line">                .maxAge(<span class="number">3600</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>这个内容前几天已经发布过了，链接<a href="https://kbdog.github.io/2021/04/04/springboot-1/">https://kbdog.github.io/2021/04/04/springboot-1/</a></p>
+<h2 id="拦截器的使用"><a href="#拦截器的使用" class="headerlink" title="拦截器的使用"></a>拦截器的使用</h2><p>拦截器的实现思想是AOP，由<a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-handlermapping-interceptor">Spring官方文档</a>可以知道拦截器要实现<code>HandlerInterceptor</code>接口。<code>HandlerInterceptor</code>接口中主要有三个方法<code>postHandle</code>、<code>afterCompletion</code>、和<code>preHandle</code>。分别对应于Controller运行之后、完整的请求之后、实际处理的Controller之前。因此，<code>preHandle</code>是其中最主要的方法，该方法返回值为<code>boolean</code>，若返回<code>true</code>，则拦截器放行，请求继续执行，若为<code>false</code>则相反。通常拦截器应用在路径验证、权限验证、日志打印等方面。以下是其实现代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApiInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">//在controller前调用</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;经过拦截器...&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;请求链接:&quot;</span>+request.getRequestURL());</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//在controller后调用</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;postHandle:访问controller完毕&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//整个过程结束后调用</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;afterCompletion:整个过程完毕&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>拦截器写好后还要将其添加到配置类/文件中</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line">	<span class="comment">//拦截器设置</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">       registry.addInterceptor(<span class="keyword">new</span> ApiInterceptor()).addPathPatterns(<span class="string">&quot;/**&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>spring mvc</tag>
+        <tag>前后端分离</tag>
+        <tag>注解</tag>
+      </tags>
+  </entry>
 </search>
