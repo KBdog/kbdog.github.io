@@ -524,7 +524,8 @@
   <entry>
     <title>Java常见容器的简介、排序与遍历</title>
     <url>/2021/04/20/collection/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>容器主要包括 Collection 和 Map 两种，Collection 存储着对象的集合，而 Map 存储着键值对（两个对象）的映射表。</p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在看<a href="www.cyc2018.xyz">csnotes</a>复习基础知识，正好写博客记录一下</p>
+<h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>容器主要包括 Collection 和 Map 两种，Collection 存储着对象的集合，而 Map 存储着键值对（两个对象）的映射表。</p>
 <h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p><img src="/images_chapters/Collection.jpg" alt="Collection继承关系"></p>
 <ol>
 <li>Set</li>
@@ -556,7 +557,7 @@
 <h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p><img src="/images_chapters/Map.jpg" alt="Collection继承关系"></p>
 <ul>
 <li>TreeMap：基于红黑树实现。</li>
-<li>HashMap：基于哈希表实现，线程不安全。内部包含了一个 Entry 类型的数组 table。Entry 存储着键值对。 Entry 是一个链表。即数组中的每个位置被当成一个桶，一个桶存放一个链表。HashMap 使用拉链法来解决冲突，同一个链表中存放哈希值和散列桶取模运算结果相同的 Entry。<br><img src="/images_chapters/HashMap.jpg"></li>
+<li>HashMap：基于哈希表实现，线程不安全。内部包含了一个 Entry 类型的数组 table。Entry 存储着键值对。 Entry 是一个链表。即数组中的每个位置被当成一个桶，一个桶存放一个链表。HashMap 使用拉链法来解决冲突，同一个链表中存放哈希值和散列桶取模运算结果相同的 Entry。在jdk1.8中，一个桶存储的链表长度大于等于 8 时会将链表转换为红黑树。<br><img src="/images_chapters/HashMap.jpg"></li>
 <li>HashTable：和 HashMap 类似，但它是线程安全的，这意味着同一时刻多个线程同时写入 HashTable 不会导致数据不一致。它是遗留类，不应该去使用它，而是使用 ConcurrentHashMap 来支持线程安全，ConcurrentHashMap 的效率会更高，因为 ConcurrentHashMap 引入了分段锁。</li>
 <li>LinkedHashMap：使用双向链表来维护元素的顺序，顺序为插入顺序或者最近最少使用（LRU）顺序。</li>
 </ul>
