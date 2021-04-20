@@ -521,4 +521,63 @@
         <tag>dplayer</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java常见容器的简介、排序与遍历</title>
+    <url>/2021/04/20/collection/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>容器主要包括 Collection 和 Map 两种，Collection 存储着对象的集合，而 Map 存储着键值对（两个对象）的映射表。</p>
+<h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p><img src="/images_chapters/Collection.jpg" alt="Collection继承关系"></p>
+<ol>
+<li>Set</li>
+</ol>
+<ul>
+<li>TreeSet：基于红黑树实现，支持有序性操作，例如根据一个范围查找元素的操作。但是查找效率不如 HashSet，HashSet 查找的时间复杂度为 O(1)，TreeSet 则为 O(logN)。</li>
+<li>HashSet：基于哈希表实现，支持快速查找，但不支持有序性操作。并且失去了元素的插入顺序信息，也就是说使用 Iterator 遍历 HashSet 得到的结果是不确定的。</li>
+<li>LinkedHashSet：具有 HashSet 的查找效率，并且内部使用双向链表维护元素的插入顺序。</li>
+</ul>
+<ol start="2">
+<li>Queue</li>
+</ol>
+<ul>
+<li>LinkedList：可以用它来实现双向队列。</li>
+<li>PriorityQueue：基于堆结构实现，可以用它来实现优先队列。</li>
+</ul>
+<ol start="3">
+<li>List</li>
+</ol>
+<ul>
+<li>ArrayList：基于动态数组实现，支持随机访问，线程不安全。数组默认大小为10，每次扩容使用<code>grow()</code>方法扩容一半，也就是原数组大小的1.5倍。每次扩容时使用<code>Array.copyOf()</code>把原数组复制到新数组中。<br><img src="/images_chapters/ArrayList.jpg"></li>
+<li>Vector：和 ArrayList 类似，虽然访问速度较慢，但它是线程安全的。</li>
+<li>LinkedList：基于双向链表实现，只能顺序访问，但是可以快速地在链表中间插入和删除元素。不仅如此，LinkedList 还可以用作栈、队列和双向队列。</li>
+</ul>
+<p>Collection各种集合的使用方式都差不多，以下用<code>ArrayList</code>作为例子<br><strong>使用collection类的sort()方法进行排序</strong><br>sort方法参数包含一个<code>List</code>和<code>Comparator</code>对象，<code>Comparator</code>中<code>compare</code>方法要指定排序规则，返回值若大于0则前者权重比后者大，将数组的前一个对象和后一个对象做交换，小于0则相反，等于0则按存入顺序排序。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestList</span><span class="params">()</span></span>&#123;</span><br><span class="line">       List&lt;User&gt;list=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">       list.add(<span class="keyword">new</span> User(<span class="number">1</span>,<span class="string">&quot;user1&quot;</span>));</span><br><span class="line">       list.add(<span class="keyword">new</span> User(<span class="number">2</span>,<span class="string">&quot;user2&quot;</span>));</span><br><span class="line">       list.add(<span class="keyword">new</span> User(<span class="number">3</span>,<span class="string">&quot;user3&quot;</span>));</span><br><span class="line">       <span class="comment">//list排序</span></span><br><span class="line">       <span class="comment">//list.sort(Comparator.comparing(User::getUid));</span></span><br><span class="line">       Collections.sort(list, <span class="keyword">new</span> Comparator&lt;User&gt;() &#123;</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(User o1, User o2)</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> o1.getUid()-o2.getUid();</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>使用foreach和迭代器进行遍历</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;User&gt;list=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list.add(<span class="keyword">new</span> User(<span class="number">1</span>,<span class="string">&quot;user1&quot;</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> User(<span class="number">3</span>,<span class="string">&quot;user3&quot;</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> User(<span class="number">2</span>,<span class="string">&quot;user2&quot;</span>));</span><br><span class="line">        <span class="comment">//list的遍历</span></span><br><span class="line">        <span class="comment">//foreach</span></span><br><span class="line">        <span class="keyword">for</span>(User user:list)&#123;</span><br><span class="line">            System.out.println(user.getUid()+<span class="string">&quot;,&quot;</span>+user.getUsername());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//iterator</span></span><br><span class="line">        Iterator&lt;User&gt; iterator = list.iterator();</span><br><span class="line">        <span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">            User next = iterator.next();</span><br><span class="line">            System.out.println(next.getUid()+<span class="string">&quot;,&quot;</span>+next.getUsername());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p><img src="/images_chapters/Map.jpg" alt="Collection继承关系"></p>
+<ul>
+<li>TreeMap：基于红黑树实现。</li>
+<li>HashMap：基于哈希表实现，线程不安全。内部包含了一个 Entry 类型的数组 table。Entry 存储着键值对。 Entry 是一个链表。即数组中的每个位置被当成一个桶，一个桶存放一个链表。HashMap 使用拉链法来解决冲突，同一个链表中存放哈希值和散列桶取模运算结果相同的 Entry。<br><img src="/images_chapters/HashMap.jpg"></li>
+<li>HashTable：和 HashMap 类似，但它是线程安全的，这意味着同一时刻多个线程同时写入 HashTable 不会导致数据不一致。它是遗留类，不应该去使用它，而是使用 ConcurrentHashMap 来支持线程安全，ConcurrentHashMap 的效率会更高，因为 ConcurrentHashMap 引入了分段锁。</li>
+<li>LinkedHashMap：使用双向链表来维护元素的顺序，顺序为插入顺序或者最近最少使用（LRU）顺序。</li>
+</ul>
+<p>以<code>HashMap</code>作为例子进行<code>Map</code>集合的排序和遍历<br><strong>将Map转为List进行排序</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestHashMap</span><span class="params">()</span></span>&#123;</span><br><span class="line">       Map&lt;Integer,User&gt;map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">       map.put(<span class="number">1</span>,<span class="keyword">new</span> User(<span class="number">1</span>,<span class="string">&quot;user1&quot;</span>));</span><br><span class="line">       map.put(<span class="number">2</span>,<span class="keyword">new</span> User(<span class="number">3</span>,<span class="string">&quot;user2&quot;</span>));</span><br><span class="line">       map.put(<span class="number">3</span>,<span class="keyword">new</span> User(<span class="number">2</span>,<span class="string">&quot;user3&quot;</span>));</span><br><span class="line">       <span class="comment">//转list排序:根据key值升序</span></span><br><span class="line">       ArrayList&lt;Map.Entry&lt;Integer, User&gt;&gt; entries = <span class="keyword">new</span> ArrayList&lt;&gt;(map.entrySet());</span><br><span class="line">       entries.sort(Comparator.comparing(Map.Entry::getKey));</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>使用foreach或迭代器进行遍历</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestHashMap</span><span class="params">()</span></span>&#123;</span><br><span class="line">       Map&lt;Integer,User&gt;map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">       map.put(<span class="number">1</span>,<span class="keyword">new</span> User(<span class="number">1</span>,<span class="string">&quot;user1&quot;</span>));</span><br><span class="line">       map.put(<span class="number">2</span>,<span class="keyword">new</span> User(<span class="number">3</span>,<span class="string">&quot;user2&quot;</span>));</span><br><span class="line">       map.put(<span class="number">3</span>,<span class="keyword">new</span> User(<span class="number">2</span>,<span class="string">&quot;user3&quot;</span>));</span><br><span class="line">       <span class="comment">//转list排序:根据key值升序</span></span><br><span class="line">       ArrayList&lt;Map.Entry&lt;Integer, User&gt;&gt; entries = <span class="keyword">new</span> ArrayList&lt;&gt;(map.entrySet());</span><br><span class="line">       entries.sort(Comparator.comparing(Map.Entry::getKey));</span><br><span class="line">       <span class="comment">//foreach遍历</span></span><br><span class="line">       <span class="keyword">for</span>(Map.Entry&lt;Integer,User&gt; user:map.entrySet())&#123;</span><br><span class="line">   		System.out.println(user.getKey()+<span class="string">&quot;,&quot;</span>+user.getValue().getUsername());</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//迭代器遍历</span></span><br><span class="line">       Iterator&lt;Map.Entry&lt;Integer, User&gt;&gt; iterator = map.entrySet().iterator();</span><br><span class="line">       <span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">           Map.Entry&lt;Integer, User&gt; userEntry = iterator.next();</span><br><span class="line">           System.out.println(userEntry.getKey()+<span class="string">&quot;,&quot;</span>+userEntry.getValue().getUsername());</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解决集合线程安全问题"><a href="#解决集合线程安全问题" class="headerlink" title="解决集合线程安全问题"></a>解决集合线程安全问题</h2><ol>
+<li>最直接的方法是使用线程安全的集合，如<code>Vector</code>、<code>HashTable</code>、<code>ConcurrentHashMap</code>、<code>CopyOnWriteArrayList</code>、<code>CopyOnWriteArraySet</code>、<code>ConcurrentSkipListMap</code>、<code>ConcurrentSkipListSet</code>、<code>ConcurrentLinkedQueue</code>、<code>ConcurrentLinkedDeque</code>等。</li>
+<li>使用<code>Collections.synchronizedMap()</code>、<code>Collections.synchronizedList()</code>、<code>Collections.synchronizedCollection()</code>手动给线程不安全的集合加锁。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>collection</tag>
+        <tag>map</tag>
+        <tag>集合</tag>
+        <tag>排序</tag>
+        <tag>遍历</tag>
+      </tags>
+  </entry>
 </search>
