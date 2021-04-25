@@ -626,4 +626,89 @@
         <tag>多线程</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SSM框架学习（七）Spring中的事务管理</title>
+    <url>/2021/04/25/transaction/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前我的项目中事务处理都是直接在对应事务方法上加<code>@Transacational</code>注解让spring容器帮我处理，但其具体有哪些细节并不是太了解。在浏览许多博客学习之后，我对spring的事务处理有了更清晰的认识。</p>
+<h2 id="什么是事务"><a href="#什么是事务" class="headerlink" title="什么是事务"></a>什么是事务</h2><p>首先，事务是什么？简单理解事务就是一组操作。比如增删改查，对于数据库来说这些操作要么成功执行提交要么不执行回滚。事务最经典的例子就是转账：A要给B转账1000元，这个过程包含两个关键操作</p>
+<ol>
+<li>将A的账户减少1000元</li>
+<li>将B的账户增加1000元</li>
+</ol>
+<p>如果在整个过程中出现异常比如网络问题，A的账户减少了1000元但是B的账户却没有增加金钱，这样整个事务必须回滚到执行前的状态。事务就是保证操作要么成功要么失败，这是事务的原子性。在业务中我们最常使用到事务的是数据库操作。</p>
+<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><ul>
+<li>原子性（Atomicity）： 一个事务（transaction）中的所有操作，或者全部完成，或者全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。即，事务不可分割、不可约简。</li>
+<li>一致性（Consistency）： 在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设约束、触发器、级联回滚等。</li>
+<li>隔离性（Isolation）： 数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括未提交读（Read uncommitted）、提交读（read committed）、可重复读（repeatable read）和串行化（Serializable）。</li>
+<li>持久性（Durability）: 事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</li>
+</ul>
+<h2 id="Spring对事务的支持"><a href="#Spring对事务的支持" class="headerlink" title="Spring对事务的支持"></a>Spring对事务的支持</h2><p>Spring提供两种方式对事务进行处理：</p>
+<ol>
+<li>编程式事务处理。通过<code>TransactionTemplate</code>或者<code>TransactionManager</code>手动对事务进行提交和回滚。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//TransacationTemplate管理事务</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> TransactionTemplate transactionTemplate;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTransaction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        transactionTemplate.execute(<span class="keyword">new</span> TransactionCallbackWithoutResult() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doInTransactionWithoutResult</span><span class="params">(TransactionStatus transactionStatus)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">//具体事务</span></span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                    <span class="comment">//手动回滚</span></span><br><span class="line">                    transactionStatus.setRollbackOnly();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//TransactionManager管理事务</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> PlatformTransactionManager transactionManager;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTransaction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  TransactionStatus status = transactionManager.getTransaction(<span class="keyword">new</span> DefaultTransactionDefinition());</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">               <span class="comment">//具体事务操作</span></span><br><span class="line">              transactionManager.commit(status);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">          	  <span class="comment">//捕捉异常手动回滚</span></span><br><span class="line">              transactionManager.rollback(status);</span><br><span class="line">          &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>声明式事务处理。通过<code>@Transactional</code>注解让容器进行处理。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Transactional(propagation=propagation.PROPAGATION_REQUIRED)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> aMethod &#123;</span><br><span class="line">  <span class="comment">//do something</span></span><br><span class="line">  B b = <span class="keyword">new</span> B();</span><br><span class="line">  C c = <span class="keyword">new</span> C();</span><br><span class="line">  b.bMethod();</span><br><span class="line">  c.cMethod();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+两个事务例子来源于：<a href="https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/Spring%E4%BA%8B%E5%8A%A1%E6%80%BB%E7%BB%93.md">https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/Spring%E4%BA%8B%E5%8A%A1%E6%80%BB%E7%BB%93.md</a></li>
+</ol>
+<h2 id="事务的传播机制"><a href="#事务的传播机制" class="headerlink" title="事务的传播机制"></a>事务的传播机制</h2><p>如果带事务的方法A调用带事务的方法B，A出现异常了B会不会回滚？反过来呢？这些事务之间的调用问题执行结果就需要根据事务的传播行为来决定。<br>首先要知道spring中传播行为有哪些：</p>
+<ul>
+<li><p><code>PROPAGATION_REQUIRED</code>。使用的最多的一个事务传播行为，我们平时经常使用的<code>@Transactional</code>注解默认使用就是这个事务传播行为。如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。</p>
+</li>
+<li><p>*例子**：AB都使用<code>PROPAGATION_REQUIRED</code>。A调B，无论是A出现异常还是B出现异常整个过程都会回滚。</p>
+</li>
+<li><p><code>PROPAGATION_REQUIRES_NEW</code>。创建一个新的事务，如果当前存在事务，则把当前事务挂起。也就是说不管外部方法是否开启事务，<code>Propagation.REQUIRES_NEW</code>修饰的内部方法会新开启自己的事务，且开启的事务相互独立，互不干扰。</p>
+</li>
+<li><p>*例子**：A使用<code>PROPAGATION_REQUIRED</code>，B使用<code>PROPAGATION_REQUIRES_NEW</code>，A调B，如果A出现异常，B的事务照样成功提交，而A自身回滚；但如果B抛出异常且未被手动捕获(<code>try...catch</code>)则A和B都回滚</p>
+</li>
+<li><p><code>PROPAGATION_NESTED</code>。如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于<code>PROPAGATION_REQUIRED</code>。也就是说，在外部方法未开启事务的情况下<code>Propagation.NESTED</code>和<code>Propagation.REQUIRED</code>作用相同，修饰的内部方法都会新开启自己的事务，且开启的事务相互独立，互不干扰。如果外部方法开启事务的话，<code>Propagation.NESTED</code>修饰的内部方法属于外部事务的子事务，外部主事务回滚的话，子事务也会回滚，而内部子事务可以单独回滚而不影响外部主事务和其他子事务。</p>
+</li>
+<li><p>*例子**：A使用<code>PROPAGATION_REQUIRED</code>，B使用<code>PROPAGATION_NESTED</code>，A调B，如果B出现异常则B回滚而A不回滚；但A出现异常则AB都回滚</p>
+</li>
+<li><p><code>PROPAGATION_MANDATORY</code>。如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。（mandatory：强制性）。方法必须在一个已存在事务中执行。</p>
+</li>
+<li><p>*例子**：A不使用事务，B使用<code>PROPAGATION_MANDATORY</code>，A调B，无论B是否出现异常都会抛异常，B事务不会执行；如果A使用事务并使用<code>PROPAGATION_REQUIRED</code>，则B事务属于A事务，B出现异常回滚则A也回滚</p>
+</li>
+<li><p><code>PROPAGATION_SUPPORTS</code>。如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。</p>
+</li>
+<li><p>*例子**：B使用<code>PROPAGATION_SUPPORTS</code>，如果A存在事务且传播行为是<code>PROPAGATION_REQUIRED</code>，则B抛异常AB一起回滚；如果A不存在事务则相当于两个都没开启事务，不存在回滚。</p>
+</li>
+<li><p><code>PROPAGATION_NOT_SUPPORTED</code>。以非事务方式运行，如果当前存在事务，则把当前事务挂起。</p>
+</li>
+<li><p>*例子**：A不使用事务，B使用<code>PROPAGATION_NOT_SUPPORTED</code>，A调B，则相当于两个都不使用事务，不会存在回滚操作；如果A存在事务，则会挂起A，先执行B，如果没抛异常则无事发生。</p>
+</li>
+<li><p><code>PROPAGATION_NEVER</code>。以非事务方式运行，如果当前存在事务，则抛出异常。跟<code>PROPAGATION_MANDATORY</code>相反，方法不能在事务中执行。</p>
+</li>
+<li><p>*例子**：B使用<code>PROPAGATION_NEVER</code>，A调B，如果A使用事务则抛异常，相当于强制AB都不使用事务。</p>
+</li>
+</ul>
+<p><strong>通常用的有<code>PROPAGATION_REQUIRED</code>、<code>PROPAGATION_REQUIRES_NEW</code>、<code>PROPAGATION_NESTED</code>，如果错误的配置了<code>PROPAGATION_SUPPORTS</code>、<code>PROPAGATION_NOT_SUPPORTED</code>、<code>PROPAGATION_NEVER</code>这三种传播行为，事务将不会回滚。毕竟我们是用事务管理目的就是在业务出现异常时让操作回复到原本的状态，所以传播行为使用前三种足够了</strong></p>
+<h2 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h2><ul>
+<li><p>ISOLATION_DEFAULT :使用后端数据库默认的隔离级别，MySQL 默认采用的 REPEATABLE_READ 隔离级别， Oracle 默认采用的 READ_COMMITTED 隔离级别.</p>
+</li>
+<li><p>ISOLATION_READ_UNCOMMITTED :最低的隔离级别，使用这个隔离级别很少，因为它允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读</p>
+</li>
+<li><p>ISOLATION_READ_COMMITTED : 允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生</p>
+</li>
+<li><p>ISOLATION_REPEATABLE_READ : 对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</p>
+</li>
+<li><p>ISOLATION_SERIALIZABLE : 最高的隔离级别，完全服从 ACID 的隔离级别。通过上锁的操作让所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。</p>
+</li>
+</ul>
+<h2 id="Transactional注解的属性以及使用"><a href="#Transactional注解的属性以及使用" class="headerlink" title="@Transactional注解的属性以及使用"></a>@Transactional注解的属性以及使用</h2><h3 id="Transactional使用范围"><a href="#Transactional使用范围" class="headerlink" title="@Transactional使用范围"></a>@Transactional使用范围</h3><ul>
+<li>方法 ：推荐将注解使用于方法上，不过需要注意的是：该注解只能应用到 public 方法上，否则不生效。</li>
+<li>类 ：如果这个注解使用在类上的话，表明该注解对该类中所有的 public 方法都生效。</li>
+<li>接口 ：不推荐在接口上使用。</li>
+</ul>
+<h3 id="timeout超时时间"><a href="#timeout超时时间" class="headerlink" title="timeout超时时间"></a>timeout超时时间</h3><p>所谓事务超时，就是指一个事务所允许执行的最长时间，如果超过该时间限制但事务还没有完成，则自动回滚事务。在 TransactionDefinition 中以 int 的值来表示超时时间，其单位是秒，默认值为-1，即是不超时。</p>
+<h3 id="readOnly只读"><a href="#readOnly只读" class="headerlink" title="readOnly只读"></a>readOnly只读</h3><p>事务为只读事务，如果里面存在对数据库的增删改操作则会抛出异常并回滚</p>
+<h3 id="isolation隔离级别"><a href="#isolation隔离级别" class="headerlink" title="isolation隔离级别"></a>isolation隔离级别</h3><p>设置事务的隔离级别</p>
+<h3 id="propagation传播行为"><a href="#propagation传播行为" class="headerlink" title="propagation传播行为"></a>propagation传播行为</h3><p>设置事务的传播行为</p>
+<h3 id="rollbackFor和noRollbackFor"><a href="#rollbackFor和noRollbackFor" class="headerlink" title="rollbackFor和noRollbackFor"></a>rollbackFor和noRollbackFor</h3><p>自定义回滚或不回滚异常</p>
+]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>spring</tag>
+        <tag>事务</tag>
+      </tags>
+  </entry>
 </search>
