@@ -736,7 +736,9 @@
 <li>解压缩</li>
 <li>运行<code>bin</code>目录下的<code>elasticsearch.bat</code>批处理文件</li>
 <li>cd到对应目录在dos命令行<code>elasticsearch-service.bat install</code>安装<code>elasticsearch</code>服务</li>
-<li>访问<code>localhost:9200</code>(默认端口)<h2 id="kibana可视化工具安装-windows"><a href="#kibana可视化工具安装-windows" class="headerlink" title="kibana可视化工具安装(windows)"></a>kibana可视化工具安装(windows)</h2></li>
+<li>访问<code>localhost:9200</code>(默认端口)</li>
+</ol>
+<h2 id="kibana可视化工具安装-windows"><a href="#kibana可视化工具安装-windows" class="headerlink" title="kibana可视化工具安装(windows)"></a>kibana可视化工具安装(windows)</h2><ol>
 <li>上<a href="https://www.elastic.co/cn/downloads/kibana">官网</a>下载压缩包</li>
 <li>解压缩</li>
 <li>运行<code>bin</code>目录下的<code>kibana.bat</code>（git-bash可用<code>cmd.exe /C kibana</code>运行）</li>
