@@ -780,4 +780,77 @@
         <tag>java</tag>
       </tags>
   </entry>
+  <entry>
+    <title>阿里云服务器的配置以及spring boot项目的部署</title>
+    <url>/2021/09/11/aliyun-server-config/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从大二开始我就一直想着能做个自己的网站，今年年初搭建的这个博客只是静态的页面，不能和后端进行数据交互，所以还是不太满足。正巧最近阿里云对大学生的优惠活动<a href="https://developer.aliyun.com/plan/grow-up?spm=5176.13329450.help.2.1eba4df5CQJzXL">云翼计划</a>开始了，我直接上去免费领了台ECS服务器来搭建我的毕业设计后端。这篇博客就来讲解整个阿里云服务器配置的过程和后端<code>spring boot</code>项目的部署</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ol>
+<li>首先要有远程连接服务器的工具<code>Xshell</code>和远程文件传输工具<code>Xftp</code>，这两个在谷歌都有免费社区版下载</li>
+<li>阿里云买一台服务器（或云翼计划直接免费领）</li>
+<li>在<a href="https://ecs.console.aliyun.com/#/home">云服务器管理控制台</a>里找到自己刚刚购买的服务器实例，重置并设置密码</li>
+<li>找到<code>安全组</code>的选项，点击<code>配置规则</code>，在<code>入方向</code>中手动添加规则来开放外部应用可访问的端口</li>
+<li>填写规则时协议和类型默认<code>自定义TCP</code>，授权对象默认<code>0.0.0.0/0</code>，主要要填的是端口范围，填写规则为<code>起始端口号/结束端口号</code>，比如要开放<code>MySQL</code>默认的访问端口<code>3306</code>则直接填<code>3306/3306</code>。这只是开放端口的第一步，后面还要在服务器防火墙里开启端口访问</li>
+</ol>
+<h2 id="配置服务器"><a href="#配置服务器" class="headerlink" title="配置服务器"></a>配置服务器</h2><p>通常我们购买服务器都会选择<code>linux</code>操作系统，因为相比于常用的<code>Windows</code>，其轻量简洁且内存占用小，权限明确，对于开发者极其友好。使用<code>Xshell</code>连接上服务器后展示的是控制台，因为没有图形化界面，所以在服务器中所有的操作都要通过<code>linux</code>控制台来实现，因此<code>linux</code>的基本操作比如<code>cd</code>、<code>ll</code>、<code>pwd</code>、<code>vim</code>等都要了解一下，当然不熟悉也可以实时通过搜索引擎现学现卖。</p>
+<h3 id="git的安装"><a href="#git的安装" class="headerlink" title="git的安装"></a>git的安装</h3><p>对于开发者来说，<code>git</code>几乎是必不可少的工具，所以一定要装上。在服务器上直接使用命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install git</span><br></pre></td></tr></table></figure>
+<p>安装完毕可以使用命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+<p>来检查是否安装成功，卸载也可以直接使用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum remove git</span><br></pre></td></tr></table></figure>
+<h3 id="SSR的安装配置"><a href="#SSR的安装配置" class="headerlink" title="SSR的安装配置"></a>SSR的安装配置</h3><p>因为我是写爬虫的，所以代理是必不可少的一部分，我的代理池主要是通过<code>SSR</code>来获得，所以我的服务器中也要配置SSR。在网上找了很久，最终找到了<a href="https://github.com/TyrantLucifer">@TyrantLucifer</a>大佬开发的可供<code>linux</code>命令行使用的工具<a href="https://github.com/TyrantLucifer/ssr-command-client">ssr-command-client</a>，使用教程就在大佬的<code>github</code>仓库上，有兴趣的可以自己去看。这里就不细说了</p>
+<h3 id="jdk的安装"><a href="#jdk的安装" class="headerlink" title="jdk的安装"></a>jdk的安装</h3><p>因为我是写<code>java</code>的，所以还要安装<code>java</code>的<code>jdk</code></p>
+<h4 id="首先查看云端支持的jdk版本"><a href="#首先查看云端支持的jdk版本" class="headerlink" title="首先查看云端支持的jdk版本"></a>首先查看云端支持的<code>jdk</code>版本</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum search java|grep jdk</span><br></pre></td></tr></table></figure>
+<h4 id="选择jdk版本安装（这里安装的是openjdk1-8）"><a href="#选择jdk版本安装（这里安装的是openjdk1-8）" class="headerlink" title="选择jdk版本安装（这里安装的是openjdk1.8）"></a>选择<code>jdk</code>版本安装（这里安装的是<code>openjdk1.8</code>）</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install -y java-1.8.0-openjdk</span><br></pre></td></tr></table></figure>
+<h4 id="检查是否安装成功"><a href="#检查是否安装成功" class="headerlink" title="检查是否安装成功"></a>检查是否安装成功</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<h4 id="查看jdk的安装目录（如有需要）"><a href="#查看jdk的安装目录（如有需要）" class="headerlink" title="查看jdk的安装目录（如有需要）"></a>查看<code>jdk</code>的安装目录（如有需要）</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find &#x2F; -name &#39;java&#39;</span><br></pre></td></tr></table></figure>
+<h3 id="MySQL的安装配置"><a href="#MySQL的安装配置" class="headerlink" title="MySQL的安装配置"></a>MySQL的安装配置</h3><h4 id="直接运行以下命令安装最新的版本号为8的MySQL"><a href="#直接运行以下命令安装最新的版本号为8的MySQL" class="headerlink" title="直接运行以下命令安装最新的版本号为8的MySQL"></a>直接运行以下命令安装最新的版本号为8的<code>MySQL</code></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">dnf -y install @mysql</span><br></pre></td></tr></table></figure>
+<h4 id="运行以下命令查看是否安装成功"><a href="#运行以下命令查看是否安装成功" class="headerlink" title="运行以下命令查看是否安装成功"></a>运行以下命令查看是否安装成功</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql -V</span><br></pre></td></tr></table></figure>
+<h4 id="配置MySQL服务开机自启"><a href="#配置MySQL服务开机自启" class="headerlink" title="配置MySQL服务开机自启"></a>配置<code>MySQL</code>服务开机自启</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl enable --now mysqld</span><br></pre></td></tr></table></figure>
+<h4 id="查看MySQL服务是否已启动"><a href="#查看MySQL服务是否已启动" class="headerlink" title="查看MySQL服务是否已启动"></a>查看<code>MySQL</code>服务是否已启动</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl status mysqld</span><br></pre></td></tr></table></figure>
+<h4 id="执行MySQL安全性操作并设置密码"><a href="#执行MySQL安全性操作并设置密码" class="headerlink" title="执行MySQL安全性操作并设置密码"></a>执行<code>MySQL</code>安全性操作并设置密码</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>命令运行后一路<code>yes</code>（如果需要远程使用<code>root</code>用户账号登录则在选<code>no</code>），密码验证策略（设置密码的强度）按自己需求来</p>
+<h4 id="创建新用户账号（MySQL8的版本使用方法）"><a href="#创建新用户账号（MySQL8的版本使用方法）" class="headerlink" title="创建新用户账号（MySQL8的版本使用方法）"></a>创建新用户账号（MySQL8的版本使用方法）</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># kbdog是用户名，%是允许外部连接访问的IP，通常使用%指代所有IP，123即是该例子所用密码</span><br><span class="line">create user &#39;kbdog&#39;@&#39;%&#39; identified by &#39;123&#39;;</span><br><span class="line"># 赋予所有权限</span><br><span class="line">grant all privileges on *.* to &#39;kbdog&#39;@&#39;%&#39;with grant option;</span><br><span class="line"># 刷新权限</span><br><span class="line">flush privileges;</span><br><span class="line"># 具体账号信息可在mysql库中的user表中查看</span><br><span class="line">select * from user;</span><br></pre></td></tr></table></figure>
+<h4 id="开放MySQL的端口"><a href="#开放MySQL的端口" class="headerlink" title="开放MySQL的端口"></a>开放MySQL的端口</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 首先进入&#x2F;etc&#x2F;sysconfig 查看是否有iptables文件</span><br><span class="line">cd &#x2F;etc&#x2F;sysconfig</span><br><span class="line"></span><br><span class="line"># 若没有iptables文件 则执行以下命令</span><br><span class="line">yum install iptables-services</span><br><span class="line"></span><br><span class="line"># vim iptables文件</span><br><span class="line"># 增加开放3306端口的语句一定要在icmp-host-prohibited之前</span><br><span class="line"># 若是以后想开放其他端口也是在这里添加 只需要将3306替换成其他端口号</span><br><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT</span><br><span class="line"></span><br><span class="line"># 重启防火墙</span><br><span class="line">systemctl restart iptables.service</span><br><span class="line"></span><br><span class="line"># 查看防火墙状态</span><br><span class="line">service iptables status</span><br></pre></td></tr></table></figure>
+<h3 id="Spring-Boot项目的部署"><a href="#Spring-Boot项目的部署" class="headerlink" title="Spring Boot项目的部署"></a>Spring Boot项目的部署</h3><p>前面的准备工作都做完之后就可以开始部署项目了</p>
+<h4 id="项目打包成jar包"><a href="#项目打包成jar包" class="headerlink" title="项目打包成jar包"></a>项目打包成jar包</h4><p>使用<code>IDEA</code>可以直接将整个项目打包，在<code>IDEA</code>界面的<code>Maven</code>栏中先<code>clean</code>然后<code>package</code>打包成<code>jar</code></p>
+<h4 id="把jar包穿上服务器"><a href="#把jar包穿上服务器" class="headerlink" title="把jar包穿上服务器"></a>把jar包穿上服务器</h4><p>使用<code>Xftp</code>把<code>jar</code>包传上服务器自定义位置</p>
+<h4 id="使用命令运行部署"><a href="#使用命令运行部署" class="headerlink" title="使用命令运行部署"></a>使用命令运行部署</h4><p>项目访问的端口号要预先在<a href="https://ecs.console.aliyun.com/#/home">阿里云服务器管理控制台</a>的安全组中预先配置，配置后可直接使用运行<code>jar</code>包的命令运行访问</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -jar XXX.jar</span><br></pre></td></tr></table></figure>
+<p>这种方式只会在前台运行，如果关闭了与服务器的连接项目也会关闭，推荐使用后台运行的命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nohup java -jar XXX.jar</span><br></pre></td></tr></table></figure>
+<p>这样项目就在后台运行了起来，如果想把所有输出的内容打印出来还可以使用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nohup java -jar XXX.jar &gt; XXX.out&amp;</span><br></pre></td></tr></table></figure>
+<p>这样<code>XXX.jar</code>项目的日志就会打印到同一目录的<code>XXX.out</code>文件中了</p>
+<h4 id="服务器中防火墙开放项目访问端口号"><a href="#服务器中防火墙开放项目访问端口号" class="headerlink" title="服务器中防火墙开放项目访问端口号"></a>服务器中防火墙开放项目访问端口号</h4><p>如果在<a href="https://ecs.console.aliyun.com/#/home">阿里云服务器管理控制台</a>中配置过端口号仍访问不了则可手动通过防火墙开启</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 添加端口号</span><br><span class="line">firewall-cmd --zone&#x3D;public --add-port&#x3D;端口号&#x2F;tcp --permanent</span><br><span class="line"># 重新加载</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<h4 id="查看部署情况"><a href="#查看部署情况" class="headerlink" title="查看部署情况"></a>查看部署情况</h4><p>查看所有正在运行的<code>java</code>项目</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ps -ef|grep java</span><br></pre></td></tr></table></figure>
+<p>也可通过端口号查看</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lsof -i:端口号</span><br></pre></td></tr></table></figure>
+<h4 id="停止项目"><a href="#停止项目" class="headerlink" title="停止项目"></a>停止项目</h4><p>找到项目运行的进程号<code>PID</code>，直接<code>kill</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kill -9 进程号</span><br></pre></td></tr></table></figure>
+<h2 id="引流"><a href="#引流" class="headerlink" title="引流"></a>引流</h2><ul>
+<li>来我的毕设网站上留个言吧~</li>
+<li><code>github</code>：<a href="https://kbdog.github.io/kbwebstack-web">https://kbdog.github.io/kbwebstack-web</a></li>
+<li><code>gitee</code>：<a href="http://kbdog.gitee.io/kbwebstack-web">http://kbdog.gitee.io/kbwebstack-web</a></li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://help.aliyun.com/document_detail/188447.html">手动部署MySQL（CentOS 8）</a></li>
+<li><a href="https://blog.csdn.net/weixin_42126028/article/details/107463910">Linux后台运行SpringBoot项目的jar包</a></li>
+<li><a href="https://blog.csdn.net/fontcolor0/article/details/89919183">Spring Boot开启访问端口号</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
+        <tag>阿里云</tag>
+        <tag>服务器</tag>
+        <tag>配置</tag>
+        <tag>springboot</tag>
+        <tag>防火墙</tag>
+      </tags>
+  </entry>
 </search>
